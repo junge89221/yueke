@@ -5,17 +5,24 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
+import com.flyco.dialog.listener.OnOperItemClickL;
+import com.flyco.dialog.widget.ActionSheetDialog;
 import com.tencent.sonic.sdk.SonicConfig;
 import com.tencent.sonic.sdk.SonicConstants;
 import com.tencent.sonic.sdk.SonicEngine;
@@ -23,17 +30,18 @@ import com.tencent.sonic.sdk.SonicSession;
 import com.tencent.sonic.sdk.SonicSessionConfig;
 import com.tencent.sonic.sdk.SonicSessionConnection;
 import com.tencent.sonic.sdk.SonicSessionConnectionInterceptor;
+import com.yishengyue.seller.util.PhotoPicker;
 import com.yishengyue.seller.view.web.SonicJavaScriptInterface;
 import com.yishengyue.seller.view.web.SonicRuntimeImpl;
 import com.yishengyue.seller.view.web.SonicSessionClientImpl;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class MainActivity extends Activity {
 
@@ -41,6 +49,8 @@ public class MainActivity extends Activity {
     private ProgressBar progressbar;
 
     private SonicSession sonicSession;
+    private ValueCallback webValueCallbackBefore5; // 5.0以下回调
+    private ValueCallback<Uri[]> webValueCallbackLater5;// 5.0以上回调
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,18 @@ public class MainActivity extends Activity {
         webView = findViewById(R.id.web_view);
         initWebSettings(webView);
         loadIndexUrl(BuildConfig.WEB_INDEX);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PhotoPicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PhotoPicker.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -69,6 +91,7 @@ public class MainActivity extends Activity {
             sonicSession.destroy();
             sonicSession = null;
         }
+        PhotoPicker.clear();
         super.onDestroy();
     }
 
@@ -101,19 +124,7 @@ public class MainActivity extends Activity {
             sonicSession.bindClient(sonicSessionClient = new SonicSessionClientImpl());
         }
         webView.setWebViewClient(new MyWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    progressbar.setVisibility(View.GONE);
-                } else {
-                    if (progressbar.getVisibility() == View.GONE)
-                        progressbar.setVisibility(View.VISIBLE);
-                    progressbar.setProgress(newProgress);
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
+        webView.setWebChromeClient(new MyWebChromeClient());
         webView.removeJavascriptInterface("searchBoxJavaBridge_");
         Intent intent = new Intent();
         intent.putExtra(SonicJavaScriptInterface.PARAM_LOAD_URL_TIME, System.currentTimeMillis());
@@ -126,10 +137,72 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void showPhotoSelectDialog() {
+        final String[] stringItems = {"拍照", "相册"};
+        final ActionSheetDialog dialog = new ActionSheetDialog(this, stringItems, null);
+        dialog.title("选择图片")
+                .itemTextSize(20)
+                .itemTextColor(0xFF3C3C3C)
+                .titleTextSize_SP(13)
+                .titleTextColor(0xFF8F8E94)
+                .cornerRadius(12)
+                .show();
+
+        dialog.setOnOperItemClickL(new OnOperItemClickL() {
+            @Override
+            public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    PhotoPicker.takePhoto(MainActivity.this, new PhotoPicker.PhotoPickerCallBack() {
+                        @Override
+                        public void callBack(String photoPath) {
+                            onPhotoSelectedCallback(photoPath);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            onPhotoSelectedCallback(null);
+                        }
+                    });
+                } else if (position == 1) {
+                    PhotoPicker.pickPhoto(MainActivity.this, new PhotoPicker.PhotoPickerCallBack() {
+                        @Override
+                        public void callBack(String photoPath) {
+                            onPhotoSelectedCallback(photoPath);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            onPhotoSelectedCallback(null);
+                        }
+                    });
+                }
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void onPhotoSelectedCallback(String photoPath) {
+        Uri[] uris;
+        if (TextUtils.isEmpty(photoPath)) {
+            uris = new Uri[]{Uri.parse("")};
+        } else {
+            uris = new Uri[]{Uri.fromFile(new File(photoPath))};
+        }
+        if (webValueCallbackBefore5 != null) {
+            webValueCallbackBefore5.onReceiveValue(uris[0]);
+        }
+        if (webValueCallbackLater5 != null) {
+            webValueCallbackLater5.onReceiveValue(uris);
+        }
+        webValueCallbackBefore5 = null;
+        webValueCallbackLater5 = null;
+    }
+
     private class MyWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            progressbar.setVisibility(View.GONE);
             if (sonicSession != null) {
                 sonicSession.getSessionClient().pageFinish(url);
             }
@@ -147,6 +220,42 @@ public class MainActivity extends Activity {
                 return (WebResourceResponse) sonicSession.getSessionClient().requestResource(url);
             }
             return null;
+        }
+    }
+
+    private class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (newProgress == 100) {
+                progressbar.setVisibility(View.GONE);
+            } else {
+                if (progressbar.getVisibility() == View.GONE)
+                    progressbar.setVisibility(View.VISIBLE);
+                progressbar.setProgress(newProgress);
+            }
+            super.onProgressChanged(view, newProgress);
+        }
+
+        @Override
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            webValueCallbackLater5 = filePathCallback;
+            showPhotoSelectDialog();
+            return true;
+        }
+
+        public void openFileChooser(ValueCallback uploadMsg) {
+            webValueCallbackBefore5 = uploadMsg;
+            showPhotoSelectDialog();
+        }
+
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+            webValueCallbackBefore5 = uploadMsg;
+            showPhotoSelectDialog();
+        }
+
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType, String capture) {
+            webValueCallbackBefore5 = uploadMsg;
+            showPhotoSelectDialog();
         }
     }
 
@@ -204,4 +313,5 @@ public class MainActivity extends Activity {
             return "";
         }
     }
+
 }
