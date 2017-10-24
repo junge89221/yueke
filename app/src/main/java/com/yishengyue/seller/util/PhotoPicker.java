@@ -32,6 +32,7 @@ public class PhotoPicker {
 
     private static final int REQUEST_PHOTO_FROM_CAMERA = 1000;
     private static final int REQUEST_PHOTO_FROM_GALLERY = 1001;
+    private static final int REQUEST_PHOTO_FROM_CROP = 1002;
 
     private static String photoFilePath;
     private static PhotoPickerCallBack pickerCallBack;
@@ -79,6 +80,32 @@ public class PhotoPicker {
         }
     }
 
+    public static void cropPhoto(Activity activity, Uri uriRes, int aspectX, int aspectY, PhotoPickerCallBack callBack) {
+        pickerCallBack = callBack;
+        try {
+            File photoFile = createPhotoFile(activity);
+            photoFilePath = photoFile.getAbsolutePath();
+            Uri photoUri = Uri.fromFile(photoFile);
+            Intent intent = new Intent("com.android.camera.action.CROP");
+            intent.setDataAndType(uriRes, "image/*");
+            intent.putExtra("crop", "true");
+            intent.putExtra("aspectX", aspectX);
+            intent.putExtra("aspectY", aspectY);
+            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { // 暂时设定为5.0以下可能出现 uri permission denied（如果以上出现，则放开判断）
+                List<ResolveInfo> resolveInfoList = activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resolveInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    activity.grantUriPermission(packageName, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+            }
+            activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_CROP);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void onRequestPermissionsResult(Activity activity, int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
         case REQUEST_TAKE_PHOTO_PERMISSIONS:
@@ -108,6 +135,7 @@ public class PhotoPicker {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
             case REQUEST_PHOTO_FROM_CAMERA:
+            case REQUEST_PHOTO_FROM_CROP:
                 pickerCallBack.callBack(photoFilePath);
                 break;
             case REQUEST_PHOTO_FROM_GALLERY:
@@ -125,9 +153,9 @@ public class PhotoPicker {
                 pickerCallBack.callBack(photoFilePath);
                 break;
             }
-            pickerCallBack = null;
+
         } else {
-            if (requestCode == REQUEST_PHOTO_FROM_CAMERA || requestCode == REQUEST_PHOTO_FROM_GALLERY) {
+            if (requestCode == REQUEST_PHOTO_FROM_CAMERA || requestCode == REQUEST_PHOTO_FROM_GALLERY || requestCode == REQUEST_PHOTO_FROM_CROP) {
                 pickerCallBack.onCancel();
             }
         }
@@ -139,10 +167,8 @@ public class PhotoPicker {
                 || ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             activity.getWindow().setWindowAnimations(android.R.style.Animation);
-            ActivityCompat.requestPermissions(
-                    activity,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.CAMERA},
                     REQUEST_TAKE_PHOTO_PERMISSIONS);
