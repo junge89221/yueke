@@ -221,6 +221,17 @@ public class MainActivity extends Activity {
             }
             return null;
         }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.startsWith("tel")) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(url));
+                view.getContext().startActivity(intent);
+                return true;
+            }
+            return super.shouldOverrideUrlLoading(view, url);
+        }
     }
 
     private class MyWebChromeClient extends WebChromeClient {
