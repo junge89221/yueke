@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
         progressbar = findViewById(R.id.progress_bar);
         webView = findViewById(R.id.web_view);
         initWebSettings(webView);
-        loadIndexUrl(BuildConfig.WEB_INDEX);
+        loadIndexUrl("");
     }
 
     @Override
