@@ -24,6 +24,7 @@ import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.util.ToastUtils;
 
 import java.util.Locale;
 
@@ -115,7 +116,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     @Override
                     protected void onError(ApiException ex) {
                         mGetCode.setEnabled(true);
-                        Toast.makeText(RegisterActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.showToast(RegisterActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

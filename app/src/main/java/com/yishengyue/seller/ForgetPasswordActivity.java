@@ -1,6 +1,7 @@
 package com.yishengyue.seller;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.util.ToastUtils;
 
 public class ForgetPasswordActivity extends BaseActivity implements View.OnClickListener {
 
@@ -90,7 +92,7 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                     CommApi.instance().getVerifyCode(mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<VerifyCodeBean>(this, true) {
                         @Override
                         protected void onError(ApiException ex) {
-                             Toast.makeText(ForgetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                             ToastUtils.showToast(ForgetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -141,8 +143,19 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                         }, 2000);
                         return;
                     }
-                    // TODO: 2017/11/3 忘记密码接口
-                    Toast.makeText(this, "缺少接口", Toast.LENGTH_SHORT).show();
+                   CommApi.instance().forgetPassword(okPhone,mVerifyCodeBean.getVerifyCode(),mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<String>(this,true) {
+                       @Override
+                       protected void onError(ApiException ex) {
+                           ToastUtils.showToast(ForgetPasswordActivity.this,ex.getMsg(),Toast.LENGTH_SHORT).show();
+                       }
+
+                       @Override
+                       public void onNext(String value) {
+                           ToastUtils.showToast(ForgetPasswordActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
+                           finish();
+                           startActivity(new Intent(ForgetPasswordActivity.this,LoginActivity.class));
+                       }
+                   });
                 }
                 break;
             case R.id.activity_close:

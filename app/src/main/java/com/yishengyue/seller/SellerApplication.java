@@ -1,19 +1,29 @@
 package com.yishengyue.seller;
 
+import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
-import android.app.Application;
+import com.yishengyue.seller.util.Utils;
 
-public class SellerApplication extends Application {
+/**
+ * <pre>
+ * author：张俊
+ * date： 2017/11/2
+ * desc：
+ * <pre>
+ */
 
-    private static SellerApplication application;
+public class SellerApplication extends MultiDexApplication {
+    private static Context sApplication;
+
+    public static Context getApplication() {
+        return sApplication;
+    }
 
     @Override
     public void onCreate() {
-        application = this;
         super.onCreate();
-    }
-
-    public static SellerApplication getApplication() {
-        return application;
+        sApplication =this;
+        Utils.init(this);
     }
 }

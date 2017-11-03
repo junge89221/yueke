@@ -62,7 +62,7 @@ public class PhotoPicker {
                 }
                 activity.startActivityForResult(intent, REQUEST_PHOTO_FROM_CAMERA);
             } catch (IOException e) {
-                Toast.makeText(activity, "图片创建失败！", Toast.LENGTH_SHORT).show();
+                ToastUtils.showToast(activity, "图片创建失败！", Toast.LENGTH_SHORT).show();
             }
         } else {
             pickerCallBack.onCancel();
@@ -111,7 +111,7 @@ public class PhotoPicker {
         case REQUEST_TAKE_PHOTO_PERMISSIONS:
             for (int grantResult : grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(activity, "没有拍照权限或sdcard写入权限！", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showToast(activity, "没有拍照权限或sdcard写入权限！", Toast.LENGTH_SHORT).show();
                     pickerCallBack.onCancel();
                     return;
                 }
@@ -121,7 +121,7 @@ public class PhotoPicker {
         case REQUEST_FILE_PERMISSIONS:
             for (int grantResult : grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(activity, "没有sdcard读取权限！", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showToast(activity, "没有sdcard读取权限！", Toast.LENGTH_SHORT).show();
                     pickerCallBack.onCancel();
                     return;
                 }

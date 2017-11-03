@@ -17,6 +17,9 @@ import android.os.Looper;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.sonic.sdk.SonicDiffDataCallback;
+import com.yishengyue.seller.ScanActivity;
+import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.util.Utils;
 
 import org.json.JSONObject;
 
@@ -136,5 +139,14 @@ public class SonicJavaScriptInterface {
 
         }
         return out.toString();
+    }
+
+    @JavascriptInterface
+    public String getUserId() {
+         return Data.getUser()!=null?Data.getUser().getUserId():"";
+    }
+    @JavascriptInterface
+    public void scanQRcode() {
+        Utils.getContext().startActivity(new Intent(Utils.getContext(), ScanActivity.class));
     }
 }

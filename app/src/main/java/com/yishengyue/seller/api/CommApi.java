@@ -1,5 +1,6 @@
 package com.yishengyue.seller.api;
 
+import com.yishengyue.seller.base.Order;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 
@@ -65,13 +66,10 @@ public class CommApi extends HttpApi<CommApiService> {
      *
      * @param loginName
      * @param password
-      * @return
+     * @return
      */
     public Observable<User> login(String loginName, String password) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("loginName", loginName);
-        params.put("password", password);
-         return dispose(apiService.login(params));
+        return dispose(apiService.login(loginName,password));
     }
 
     /**
@@ -81,10 +79,34 @@ public class CommApi extends HttpApi<CommApiService> {
      * @param verifyCode
      * @return
      */
-    public Observable<User> fastLogin(String loginName,  String verifyCode) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("loginName", loginName);
-         params.put("verifyCode", verifyCode);
-        return dispose(apiService.fastLogin(params));
+    public Observable<User> fastLogin(String loginName, String verifyCode) {
+        return dispose(apiService.fastLogin(loginName, verifyCode));
+    }
+
+    /**
+     * （卖家端）通过消费验证码获取订单详情信息
+     *
+     * @return
+     */
+    public Observable<Order> getOrderDetail(String userId, String consumeVerifyCode) {
+        return dispose(apiService.getOrderDetail(userId, consumeVerifyCode));
+    }
+
+    /**
+     * 核销验证码[扫描二维码或手动收
+     *
+     * @return
+     */
+    public Observable<String> activateOrder(String userId, String consumeVerifyCode, String orderDatilId) {
+        return dispose(apiService.activateOrder(userId, consumeVerifyCode, orderDatilId));
+    }
+
+    /**
+     * 忘记密码
+     *
+     * @return
+     */
+    public Observable<String> forgetPassword(String phone, String verifyCode, String newPwd) {
+        return dispose(apiService.forgetPassword(phone, verifyCode, newPwd));
     }
 }

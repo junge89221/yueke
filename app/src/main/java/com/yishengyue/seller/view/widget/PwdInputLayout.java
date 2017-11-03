@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yishengyue.seller.R;
+import com.yishengyue.seller.util.ToastUtils;
 
 import java.util.ArrayList;
 
@@ -101,24 +102,24 @@ public class PwdInputLayout extends RelativeLayout {
             }
         });
 
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (count == mTextViews.length){
-                        StringBuffer mS = new StringBuffer();
-                        for (int i = 0; i < count; i++){
-                            mS.append(mList.get(i));
-                        }
-                        if (inputCompleteListener != null)
-                            inputCompleteListener.inputComplete(mS.toString());
-                    }else {
-                        Toast.makeText(getContext(),"请输入12位验证码",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return false;
-            }
-        });
+//        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                    if (count == mTextViews.length){
+//                        StringBuffer mS = new StringBuffer();
+//                        for (int i = 0; i < count; i++){
+//                            mS.append(mList.get(i));
+//                        }
+//                        if (inputCompleteListener != null)
+//                            inputCompleteListener.inputComplete(mS.toString());
+//                    }else {
+//                        ToastUtils.showToast(getContext(),"请输入12位验证码",Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private void  reset(){

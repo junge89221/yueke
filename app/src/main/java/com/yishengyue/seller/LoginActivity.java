@@ -22,6 +22,7 @@ import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.util.ToastUtils;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
 
@@ -83,7 +84,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 CommApi.instance().login(mLoginPhone.getText().toString().trim(),mLoginPassword.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this,true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        Toast.makeText(LoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.showToast(LoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

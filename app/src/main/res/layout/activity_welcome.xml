@@ -65,7 +65,8 @@
         android:layout_marginStart="75dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="这是对于商家O2O的描述\n具体文字你可以自行脑补或者找产品大大要，谢谢~~"
+        android:lineSpacingExtra="5dp"
+        android:text="为服务引流\n为商品增值\n我们一起合创共赢"
         android:textSize="16sp"
         />
 

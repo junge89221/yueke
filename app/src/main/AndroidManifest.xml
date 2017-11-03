@@ -14,7 +14,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".sellerApplication"
+        android:name=".SellerApplication"
         android:theme="@style/AppTheme">
 
         <meta-data
@@ -23,6 +23,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity

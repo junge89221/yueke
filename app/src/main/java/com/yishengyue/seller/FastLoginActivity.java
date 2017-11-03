@@ -25,6 +25,7 @@ import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.util.ToastUtils;
 
 import java.util.Locale;
 
@@ -109,7 +110,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     protected void onError(ApiException ex) {
                         mGetCode.setEnabled(true);
-                        Toast.makeText(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -148,7 +149,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                 CommApi.instance().fastLogin(mLoginPhone.getText().toString().trim(),mLoginCode.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this,true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        Toast.makeText(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

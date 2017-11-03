@@ -19,6 +19,15 @@ public class User {
     private String userId;
     private String storeId;
     private String applyId;
+    private String accessToken;
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public String getUserId() {
         return userId;

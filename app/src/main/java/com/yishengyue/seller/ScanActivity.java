@@ -1,20 +1,30 @@
 package com.yishengyue.seller;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.yishengyue.seller.api.CommApi;
+import com.yishengyue.seller.api.exception.ApiException;
+import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
+import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.base.Order;
+import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.view.widget.ActivateDialog;
 
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zbar.ZBarView;
 
-public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, View.OnClickListener {
+public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, View.OnClickListener, ActivateDialog.ActivateResultListener {
 
     private ZBarView mQRCodeView;
     /**
@@ -25,6 +35,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
      * 手电筒
      */
     private TextView mOpenFlash;
+    private ImageView mActivityClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,8 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
         mInputCode.setOnClickListener(this);
         mOpenFlash = (TextView) findViewById(R.id.open_flash);
         mOpenFlash.setOnClickListener(this);
+        mActivityClose = (ImageView) findViewById(R.id.activity_close);
+        mActivityClose.setOnClickListener(this);
     }
 
     @Override
@@ -71,9 +84,25 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
      */
     @Override
     public void onScanQRCodeSuccess(String result) {
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-        vibrate();
-        mQRCodeView.startSpot();
+         vibrate();
+        String consumeVerifyCode = Uri.parse(result).getQueryParameter("consumeVerifyCode");
+        if (TextUtils.isEmpty(consumeVerifyCode)||consumeVerifyCode.length() != 12) {
+            ToastUtils.showToast(this, "错误的二维码", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CommApi.instance().getOrderDetail(Data.getUser().getUserId(), result).subscribe(new SimpleSubscriber<Order>(this, true) {
+            @Override
+            protected void onError(ApiException ex) {
+                mQRCodeView.startSpot();
+                ToastUtils.showToast(ScanActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(Order value) {
+                new ActivateDialog(ScanActivity.this, value, ScanActivity.this).show();
+            }
+        });
+
     }
 
     private void vibrate() {
@@ -89,20 +118,30 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
         Log.e("=======", "打开相机出错");
     }
 
-    private boolean flashIsOpen =false;
+    private boolean flashIsOpen = false;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.input_code:
+                startActivity(new Intent(this,InputCodeActivity.class));
                 break;
             case R.id.open_flash:
-                 if(flashIsOpen){
-                     mQRCodeView.closeFlashlight();
-                 }else {
-                     mQRCodeView.openFlashlight();
-                 }
+                if (flashIsOpen) {
+                    mQRCodeView.closeFlashlight();
+                } else {
+                    mQRCodeView.openFlashlight();
+                }
                 flashIsOpen = !flashIsOpen;
                 break;
+            case R.id.activity_close:
+                finish();
+                break;
         }
+    }
+
+    @Override
+    public void onResult(boolean Success) {
+        mQRCodeView.startSpot();
     }
 }

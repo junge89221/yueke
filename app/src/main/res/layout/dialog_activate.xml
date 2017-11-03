@@ -130,7 +130,7 @@
             android:text="收货地址：四川成都市青羊区苏坡街道东坡北二路621号2-2-102，高元，18602819355"
             android:textColor="#AAB4BE"
             android:textSize="14sp"/>
-        <TextView
+       <!-- <TextView
             android:id="@+id/product_order_bill"
             android:layout_marginTop="5dp"
             android:layout_marginStart="20dp"
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:text="配送费用：快递配送免费"
             android:textColor="#AAB4BE"
-            android:textSize="14sp"/>
+            android:textSize="14sp"/>-->
         <View
             android:layout_marginTop="20dp"
             android:background="#E5E5E5"

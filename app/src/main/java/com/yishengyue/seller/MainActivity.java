@@ -2,13 +2,15 @@ package com.yishengyue.seller;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
@@ -20,9 +22,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.flyco.animation.BounceEnter.BounceEnter;
+import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
+import com.flyco.dialog.widget.NormalDialog;
 import com.tencent.sonic.sdk.SonicConfig;
 import com.tencent.sonic.sdk.SonicConstants;
 import com.tencent.sonic.sdk.SonicEngine;
@@ -30,7 +36,10 @@ import com.tencent.sonic.sdk.SonicSession;
 import com.tencent.sonic.sdk.SonicSessionConfig;
 import com.tencent.sonic.sdk.SonicSessionConnection;
 import com.tencent.sonic.sdk.SonicSessionConnectionInterceptor;
+import com.yishengyue.seller.base.BaseActivity;
+import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.PhotoPicker;
+import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.view.web.SonicJavaScriptInterface;
 import com.yishengyue.seller.view.web.SonicRuntimeImpl;
 import com.yishengyue.seller.view.web.SonicSessionClientImpl;
@@ -42,8 +51,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private WebView webView;
     private ProgressBar progressbar;
@@ -58,10 +69,11 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_main);
 
-        progressbar = findViewById(R.id.progress_bar);
-        webView = findViewById(R.id.web_view);
+        progressbar = (ProgressBar) findViewById(R.id.progress_bar);
+        webView = (WebView) findViewById(R.id.web_view);
         initWebSettings(webView);
         loadIndexUrl(BuildConfig.WEB_INDEX);
+        initExitDialog();
     }
 
     @Override
@@ -81,7 +93,26 @@ public class MainActivity extends Activity {
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
-            super.onBackPressed();
+           if(mNormalDialog.isShowing()) {
+                super.onBackPressed();
+                return;
+            }
+            if (!isQuit) {
+                isQuit = true;
+                ToastUtils.showToast(this,"再次点击退出程序", Toast.LENGTH_SHORT).show();
+                TimerTask task = null;
+                task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        isQuit = false;
+                    }
+                };
+                timer.schedule(task, 2000);
+            } else {
+                ToastUtils.cancelToast();
+                mNormalDialog.show();
+            }
+
         }
     }
 
@@ -128,7 +159,7 @@ public class MainActivity extends Activity {
         webView.removeJavascriptInterface("searchBoxJavaBridge_");
         Intent intent = new Intent();
         intent.putExtra(SonicJavaScriptInterface.PARAM_LOAD_URL_TIME, System.currentTimeMillis());
-        webView.addJavascriptInterface(new SonicJavaScriptInterface(sonicSessionClient, intent), "sonic");
+        webView.addJavascriptInterface(new SonicJavaScriptInterface(sonicSessionClient, intent), "JsToNative");
         if (sonicSessionClient != null) {
             sonicSessionClient.bindWebView(webView);
             sonicSessionClient.clientReady();
@@ -323,6 +354,39 @@ public class MainActivity extends Activity {
         public String getResponseHeaderField(String key) {
             return "";
         }
+    }
+    private Boolean isQuit = false;
+    private Timer timer = new Timer();
+    private NormalDialog mNormalDialog;
+
+    private void initExitDialog() {
+        mNormalDialog = new NormalDialog(this);
+        mNormalDialog.isTitleShow(false)//
+                .bgColor(Color.parseColor("#FFFFFF"))//
+                .cornerRadius(10)//
+                .content("确定退出？")
+                .contentGravity(Gravity.CENTER)//
+                .contentTextColor(Color.parseColor("#000000"))//
+                .dividerColor(Color.parseColor("#D8D8D8"))//
+                .btnTextSize(15.5f, 15.5f)//
+                .btnTextColor(Color.parseColor("#3C6DF8"), Color.parseColor("#3C6DF8"))//
+                .btnPressColor(Color.parseColor("#903C6DF8"))//
+                .widthScale(0.85f)//
+                .showAnim(new BounceEnter())
+                .dismissAnim(null).setOnBtnClickL(new OnBtnClickL() {
+            @Override
+            public void onBtnClick() {
+                mNormalDialog.dismiss();
+            }
+        }, new OnBtnClickL() {
+            @Override
+            public void onBtnClick() {
+                // 退出程序并杀进程
+                mNormalDialog.dismiss();
+                AppManager.getAppManager().AppExit(MainActivity.this);
+            }
+        });
+
     }
 
 }

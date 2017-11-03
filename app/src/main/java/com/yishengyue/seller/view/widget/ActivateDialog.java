@@ -2,14 +2,24 @@ package com.yishengyue.seller.view.widget;
 
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.flyco.animation.BounceEnter.BounceEnter;
 import com.flyco.dialog.widget.base.BaseDialog;
 import com.yishengyue.seller.R;
+import com.yishengyue.seller.api.CommApi;
+import com.yishengyue.seller.api.exception.ApiException;
+import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
+import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.base.Order;
+import com.yishengyue.seller.util.MoneyUtils;
+import com.yishengyue.seller.util.ToastUtils;
 
 
 /**
@@ -17,13 +27,16 @@ import com.yishengyue.seller.R;
  */
 
 public class ActivateDialog extends BaseDialog<ActivateDialog> {
-
-
+    private Order mOrder;
     private ViewHolder mHolder;
+    private Context mContext;
 
-    public ActivateDialog(Context context) {
+    public ActivateDialog(Context context, Order order,ActivateResultListener activateResultListener) {
         super(context);
         showAnim(new BounceEnter());
+        this.mContext = context;
+        this.mOrder = order;
+        mActivateResultListener = activateResultListener;
     }
 
     @Override
@@ -39,10 +52,21 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
      */
     @Override
     public void setUiBeforShow() {
-
+        if (mOrder != null) {
+            Glide.with(mContext).load(mOrder.getProductImage()).into(mHolder.mProductImg);
+            mHolder.mProductName.setText(mOrder.getProductName());
+            mHolder.mProductDec.setText(mOrder.getProductJingle());
+            mHolder.mProductPrice.setText(Html.fromHtml("价格：<font color='#00002C'>" + String.format("¥%s", MoneyUtils.getMoney(mOrder.getProductPrice())) + "</font>"));
+            mHolder.mProductNumber.setText(Html.fromHtml("数量：<font color='#AAB4BE'>" + String.format("X%s", mOrder.getProductNum()) + "</font>"));
+            mHolder.mProductOrderNo.setText(Html.fromHtml("订单编号：<font color='#000000'>" + mOrder.getOrderSn() + "</font>"));
+            mHolder.mProductOrderTime.setText(Html.fromHtml("订单日期：<font color='#000000'>" + mOrder.getAddTime() + "</font>"));
+            mHolder.mProductOrderAddress.setText(Html.fromHtml("收货地址：<font color='#000000'>" + mOrder.getReceiveAddress() + "</font>"));
+           /* mHolder.mProductOrderBill.setText(Html.fromHtml("发票类型：<font color='#000000'>" + "不开发票" + "</font>"));
+            mHolder.mProductOrderExpressFee.setText(Html.fromHtml("配送费用：<font color='#000000'>" + "快递配送免费" + "</font>"));*/
+        }
     }
 
-     class ViewHolder {
+    class ViewHolder {
         View view;
         ImageView mProductImg;
         TextView mProductName;
@@ -52,8 +76,8 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
         TextView mProductOrderNo;
         TextView mProductOrderTime;
         TextView mProductOrderAddress;
-        TextView mProductOrderBill;
-        TextView mProductOrderExpressFee;
+     /*   TextView mProductOrderBill;
+        TextView mProductOrderExpressFee;*/
         TextView mDialogCancel;
         TextView mDialogCommit;
 
@@ -67,22 +91,49 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
             this.mProductOrderNo = (TextView) view.findViewById(R.id.product_order_no);
             this.mProductOrderTime = (TextView) view.findViewById(R.id.product_order_time);
             this.mProductOrderAddress = (TextView) view.findViewById(R.id.product_order_address);
-            this.mProductOrderBill = (TextView) view.findViewById(R.id.product_order_bill);
-            this.mProductOrderExpressFee = (TextView) view.findViewById(R.id.product_order_express_fee);
+           /* this.mProductOrderBill = (TextView) view.findViewById(R.id.product_order_bill);
+            this.mProductOrderExpressFee = (TextView) view.findViewById(R.id.product_order_express_fee);*/
             this.mDialogCancel = (TextView) view.findViewById(R.id.dialog_cancel);
             this.mDialogCommit = (TextView) view.findViewById(R.id.dialog_commit);
             this.mDialogCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     dismiss();
+                    dismiss();
                 }
             });
             this.mDialogCommit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                   if(mOrder!=null){
+                       CommApi.instance().activateOrder(Data.getUser().getUserId(),mOrder.getConsumeVerifyCode(),mOrder.getOrderDetailId()).subscribe(new SimpleSubscriber<String>(mContext,true) {
+                           @Override
+                           protected void onError(ApiException ex) {
+                               if(mActivateResultListener!=null)mActivateResultListener.onResult(false);
+                            ToastUtils.showToast(mContext, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                           }
+                           @Override
+                           public void onNext(String value) {
+                               if(mActivateResultListener!=null)mActivateResultListener.onResult(true);
+                               ToastUtils.showToast(mContext, "核销成功", Toast.LENGTH_SHORT).show();
+                               dismiss();
+                           }
+                       });
+                   }
+
+
+
 
                 }
             });
         }
+    }
+
+    public void setActivateResultListener(ActivateResultListener activateResultListener) {
+        mActivateResultListener = activateResultListener;
+    }
+
+    private ActivateResultListener mActivateResultListener;
+    public interface  ActivateResultListener{
+        void onResult(boolean Success);
     }
 }
