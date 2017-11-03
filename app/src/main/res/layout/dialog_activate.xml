@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@mipmap/img_popup_window"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="激活商品"
+        android:textColor="#ffffff"
+        android:textSize="16sp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/comments_white_fillet_8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/shadow_15051">
+
+                <ImageView
+                    android:id="@+id/product_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="20dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/img_popup_window"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="游泳卡 成人  年卡"
+                    android:textColor="#3C3C3C"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/product_dec"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="游泳好去处"
+                    android:textColor="#B1B1B1"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/product_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="9dp"
+                    android:text="价格：¥ 210.00"
+                    android:textColor="#1A1A1A"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:id="@+id/product_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="数量：X1"
+                    android:textColor="#1A1A1A"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#DFE4E6"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <TextView
+            android:id="@+id/product_order_no"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="订单编号：104847399"
+            android:textColor="#AAB4BE"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/product_order_time"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="订单日期：2017/01/02 22:01"
+            android:textColor="#AAB4BE"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/product_order_address"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="收货地址：四川成都市青羊区苏坡街道东坡北二路621号2-2-102，高元，18602819355"
+            android:textColor="#AAB4BE"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/product_order_bill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="发票类型：不开发票/发票（公司名称）"
+            android:textColor="#AAB4BE"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/product_order_express_fee"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="配送费用：快递配送免费"
+            android:textColor="#AAB4BE"
+            android:textSize="14sp"/>
+        <View
+            android:layout_marginTop="20dp"
+            android:background="#E5E5E5"
+             android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dialog_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#3B55E6"
+                android:textSize="17sp"/>
+
+            <View
+                 android:background="#E5E5E5"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/dialog_commit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="激活"
+                android:textColor="#3B55E6"
+                android:textSize="17sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -3,4 +3,5 @@
     <color name="colorPrimary">#DEDEDE</color>
     <color name="colorPrimaryDark">#DEDEDE</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="ColorFFFF">#FFFFFF</color>
 </resources>
