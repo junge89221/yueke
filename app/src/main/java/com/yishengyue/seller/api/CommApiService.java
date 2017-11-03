@@ -1,6 +1,7 @@
 package com.yishengyue.seller.api;
 
 import com.yishengyue.seller.base.ApiResult;
+import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 
 import java.util.Map;
@@ -27,4 +28,17 @@ public interface CommApiService {
      */
     @GET("verifycode/getVerifyCode")
     Observable<ApiResult<VerifyCodeBean>> getVerifyCode(@Query("mobile") String mobile);
+
+    /**
+     * 登录
+     * @return
+     */
+    @POST("oto/user/login/password")
+    Observable<ApiResult<User>> login(@Body Map<String, Object> params);
+    /**
+     * 快捷登录
+     * @return
+     */
+    @POST("oto/user/login/verifyCode")
+    Observable<ApiResult<User>> fastLogin(@Body Map<String, Object> params);
 }

@@ -5,9 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.view.widget.PwdInputLayout;
 
-public class InputCodeActivity extends AppCompatActivity implements View.OnClickListener {
+public class InputCodeActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView mActivityClose;
     private PwdInputLayout mInputLayout;

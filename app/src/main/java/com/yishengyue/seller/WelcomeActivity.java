@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
+import com.yishengyue.seller.base.BaseActivity;
+
+public class WelcomeActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * 登录

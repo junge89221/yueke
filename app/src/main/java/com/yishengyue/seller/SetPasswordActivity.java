@@ -1,7 +1,10 @@
 package com.yishengyue.seller;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -17,9 +20,9 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
 import com.yishengyue.seller.api.exception.ApiException;
 import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
-import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.base.BaseActivity;
 
-public class SetPasswordActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class SetPasswordActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private ImageView mActivityClose;
     /**
      * 请输入你的手机号码
@@ -41,6 +44,10 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
 
     private String phone;
     private String VerifyCode;
+    /**
+     * 登录密码
+     */
+    private TextView mTextView4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
         mLoginFast.setText(Html.fromHtml("已有账号，去<font color='#3B55E6'><u>登录</u></font>"));
         mLoginPhone.addTextChangedListener(this);
         mLoginCode.addTextChangedListener(this);
+        mTextView4 = (TextView) findViewById(R.id.textView5);
     }
 
     @Override
@@ -80,12 +88,20 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
             case R.id.get_code:
                 break;
             case R.id.login_commit:
-                if(!mLoginPhone.getText().toString().trim().equals(mLoginCode.getText().toString().trim())){
-                    Toast.makeText(this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+                if (!mLoginPhone.getText().toString().trim().equals(mLoginCode.getText().toString().trim())) {
+                    mTextView4.setText( "两次密码不一致，重新输入");
+                    mTextView4.setTextColor(Color.parseColor("#F34268"));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextView4.setText( "确认密码");
+                            mTextView4.setTextColor(Color.parseColor("#000000"));
+                        }
+                    },2000 );
                     return;
                 }
 
-                CommApi.instance().register(phone,mLoginPhone.getText().toString().trim(),VerifyCode).subscribe(new SimpleSubscriber<String>(this,true) {
+                CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<String>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
                         Toast.makeText(SetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
@@ -93,11 +109,15 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
 
                     @Override
                     public void onNext(String value) {
-                        Toast.makeText(SetPasswordActivity.this, "完成", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
+                        finish();
                     }
                 });
                 break;
             case R.id.login_fast:
+                startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
+                finish();
                 break;
         }
     }
@@ -109,7 +129,7 @@ public class SetPasswordActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-           mLoginCommit.setEnabled(!TextUtils.isEmpty(mLoginPhone.getText().toString().trim())&&!TextUtils.isEmpty(mLoginCode.getText().toString().trim()));
+        mLoginCommit.setEnabled(!TextUtils.isEmpty(mLoginPhone.getText().toString().trim()) && !TextUtils.isEmpty(mLoginCode.getText().toString().trim()));
     }
 
     @Override

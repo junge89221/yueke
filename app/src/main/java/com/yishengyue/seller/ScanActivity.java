@@ -9,11 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.yishengyue.seller.base.BaseActivity;
 
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zbar.ZBarView;
 
-public class ScanActivity extends AppCompatActivity implements QRCodeView.Delegate, View.OnClickListener {
+public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, View.OnClickListener {
 
     private ZBarView mQRCodeView;
     /**

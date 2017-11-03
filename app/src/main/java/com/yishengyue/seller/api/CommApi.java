@@ -1,5 +1,6 @@
 package com.yishengyue.seller.api;
 
+import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 
 import java.util.HashMap;
@@ -58,4 +59,32 @@ public class CommApi extends HttpApi<CommApiService> {
         return dispose(apiService.getVerifyCode(mobile));
     }
 
+
+    /**
+     * 登录
+     *
+     * @param loginName
+     * @param password
+      * @return
+     */
+    public Observable<User> login(String loginName, String password) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("loginName", loginName);
+        params.put("password", password);
+         return dispose(apiService.login(params));
+    }
+
+    /**
+     * 快捷登录
+     *
+     * @param loginName
+     * @param verifyCode
+     * @return
+     */
+    public Observable<User> fastLogin(String loginName,  String verifyCode) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("loginName", loginName);
+         params.put("verifyCode", verifyCode);
+        return dispose(apiService.fastLogin(params));
+    }
 }

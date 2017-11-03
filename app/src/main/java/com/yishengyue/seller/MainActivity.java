@@ -23,6 +23,7 @@ import com.tencent.sonic.sdk.SonicSession;
 import com.tencent.sonic.sdk.SonicSessionConfig;
 import com.tencent.sonic.sdk.SonicSessionConnection;
 import com.tencent.sonic.sdk.SonicSessionConnectionInterceptor;
+import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.view.web.SonicJavaScriptInterface;
 import com.yishengyue.seller.view.web.SonicRuntimeImpl;
 import com.yishengyue.seller.view.web.SonicSessionClientImpl;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private WebView webView;
     private ProgressBar progressbar;
