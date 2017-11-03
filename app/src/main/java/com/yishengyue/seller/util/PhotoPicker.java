@@ -17,7 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
-import com.yishengyue.seller.sellerApplication;
+import com.yishengyue.seller.SellerApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +141,7 @@ public class PhotoPicker {
             case REQUEST_PHOTO_FROM_GALLERY:
                 Uri uri = data.getData();
                 try {
-                    Cursor cursor = sellerApplication.getApplication().getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+                    Cursor cursor = SellerApplication.getApplication().getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
                     assert cursor != null;
                     cursor.moveToFirst();
                     int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);

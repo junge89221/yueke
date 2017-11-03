@@ -13,7 +13,7 @@ import com.yishengyue.seller.util.Utils;
  * <pre>
  */
 
-public class sellerApplication extends MultiDexApplication {
+public class SellerApplication extends MultiDexApplication {
     private static Context sApplication;
 
     public static Context getApplication() {
