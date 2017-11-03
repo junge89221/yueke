@@ -88,6 +88,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
         String consumeVerifyCode = Uri.parse(result).getQueryParameter("consumeVerifyCode");
         if (TextUtils.isEmpty(consumeVerifyCode)||consumeVerifyCode.length() != 12) {
             ToastUtils.showToast(this, "错误的二维码", Toast.LENGTH_SHORT).show();
+            mQRCodeView.startSpot();
             return;
         }
         CommApi.instance().getOrderDetail(Data.getUser().getUserId(), result).subscribe(new SimpleSubscriber<Order>(this, true) {

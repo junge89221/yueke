@@ -14,14 +14,21 @@ package com.yishengyue.seller.view.web;/*
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.sonic.sdk.SonicDiffDataCallback;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.PermissionListener;
 import com.yishengyue.seller.ScanActivity;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.util.Utils;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Sonic javaScript Interface (Android API Level >= 17)
@@ -147,6 +154,23 @@ public class SonicJavaScriptInterface {
     }
     @JavascriptInterface
     public void scanQRcode() {
-        Utils.getContext().startActivity(new Intent(Utils.getContext(), ScanActivity.class));
+                        AndPermission.with(Utils.getContext())
+                        .requestCode(100)
+                        .permission(Permission.CAMERA)
+                        .callback(new PermissionListener() {
+                            @Override
+                            public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
+                                Log.e("==========", "onSucceed===" + requestCode + "===grantPermissions===" + grantPermissions);
+                                Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Utils.getContext().startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
+                                Log.e("==========", "onFailed===" + requestCode + "===deniedPermissions===" + deniedPermissions);
+                            }
+                        })
+                        .start();
     }
 }

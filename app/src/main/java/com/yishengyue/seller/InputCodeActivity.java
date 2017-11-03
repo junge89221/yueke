@@ -35,7 +35,7 @@ public class InputCodeActivity extends BaseActivity implements View.OnClickListe
         mInputLayout.setInputCompleteListener(new PwdInputLayout.InputCompleteListener() {
             @Override
             public void inputComplete(String result) {
-                CommApi.instance().getOrderDetail(Data.getUser().getUserId(),result).subscribe(new SimpleSubscriber<Order>(InputCodeActivity.this,true) {
+                 CommApi.instance().getOrderDetail(Data.getUser().getUserId(),result).subscribe(new SimpleSubscriber<Order>(InputCodeActivity.this,true) {
                     @Override
                     protected void onError(ApiException ex) {
                          ToastUtils.showToast(InputCodeActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
