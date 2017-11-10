@@ -84,6 +84,7 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_close:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.get_code:
@@ -112,6 +113,7 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
                     public void onNext(String value) {
                         ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });

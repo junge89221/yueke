@@ -99,16 +99,20 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.get_code:
+                if (TextUtils.isEmpty(mLoginPhone.getText())) {
+                    mTextView4.setText("请输入登录手机号");
+                    return;
+                }
                 if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
-                    mTextView4.setText( "手机号码格式不正确");
+                    mTextView4.setText("手机号码格式不正确");
                     mTextView4.setTextColor(Color.parseColor("#F34268"));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mTextView4.setText( "手机号");
+                            mTextView4.setText("手机号");
                             mTextView4.setTextColor(Color.parseColor("#000000"));
                         }
-                    },2000 );
+                    }, 2000);
                     return;
                 }
                 mGetCode.setEnabled(false);
@@ -129,45 +133,57 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.login_commit:
                 if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
-                    mTextView4.setText( "手机号码格式不正确");
+                    mTextView4.setText("手机号码格式不正确");
                     mTextView4.setTextColor(Color.parseColor("#F34268"));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mTextView4.setText( "手机号");
+                            mTextView4.setText("手机号");
                             mTextView4.setTextColor(Color.parseColor("#000000"));
                         }
-                    },2000 );
+                    }, 2000);
                     return;
                 }
                 if (mVerifyCodeBean == null) {
-                    mTextView5.setText( "请获取验证码");
+                    mTextView5.setText("请获取验证码");
                     mTextView5.setTextColor(Color.parseColor("#F34268"));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mTextView5.setText( "验证码");
+                            mTextView5.setText("验证码");
                             mTextView5.setTextColor(Color.parseColor("#000000"));
                         }
-                    },2000 );
+                    }, 2000);
                     return;
                 }
                 if (!mLoginPhone.getText().toString().trim().equals(okPhone)) {
-                    mTextView4.setText( "手机号和验证码不一致");
+                    mTextView4.setText("手机号和验证码不一致");
                     mTextView4.setTextColor(Color.parseColor("#F34268"));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mTextView4.setText( "手机号");
+                            mTextView4.setText("手机号");
                             mTextView4.setTextColor(Color.parseColor("#000000"));
                         }
-                    },2000 );
+                    }, 2000);
                     return;
                 }
-                Intent intent = new Intent(this, SetPasswordActivity.class);
-                intent.putExtra("phone", mLoginPhone.getText().toString().trim());
-                intent.putExtra("VerifyCode", mLoginCode.getText().toString().trim());
-                startActivity(intent);
+                if (TextUtils.equals(mVerifyCodeBean.getIsReg(), "Y")) {
+                    mTextView4.setText("该手机号已注册");
+                    mTextView4.setTextColor(Color.parseColor("#F34268"));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextView4.setText("手机号");
+                            mTextView4.setTextColor(Color.parseColor("#000000"));
+                        }
+                    }, 2000);
+                } else {
+                    Intent intent = new Intent(this, SetPasswordActivity.class);
+                    intent.putExtra("phone", mLoginPhone.getText().toString().trim());
+                    intent.putExtra("VerifyCode", mLoginCode.getText().toString().trim());
+                    startActivityForResult(intent, 1);
+                }
                 break;
             case R.id.login_fast:
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -207,6 +223,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         public void onFinish() {
             mGetCode.setText("获取");
             mGetCode.setEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            finish();
         }
     }
 }

@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -77,6 +79,10 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.login_commit:
                 if(mPageNo==1){
+                    if(TextUtils.isEmpty(mLoginPhone.getText())){
+                        mHintText.setText( "请输入登录手机号");
+                        return;
+                    }
                     if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
                         mHintText.setText("手机号码格式不正确");
                         mHintText.setTextColor(Color.parseColor("#F34268"));
@@ -97,10 +103,22 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
 
                         @Override
                         public void onNext(VerifyCodeBean value) {
-                            mVerifyCodeBean = value;
-                            okPhone = mLoginPhone.getText().toString().trim();
-                            mLoginPhone.setText("");
-                             showPage(2);
+                            if(TextUtils.equals(value.getIsReg(),"N")){
+                                mHintText.setText("该手机号还没有注册");
+                                mHintText.setTextColor(Color.parseColor("#F34268"));
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mHintText.setText("手机号");
+                                        mHintText.setTextColor(Color.parseColor("#000000"));
+                                    }
+                                }, 2000);
+                            }else {
+                                mVerifyCodeBean = value;
+                                okPhone = mLoginPhone.getText().toString().trim();
+                                mLoginPhone.setText("");
+                                showPage(2);
+                            }
                          }
                     });
                 }else if(mPageNo==2){
@@ -129,6 +147,7 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                         return;
                     }
                     mLoginPhone.setText("");
+
                     showPage(3);
                 }else if(mPageNo==3){
                     if (TextUtils.isEmpty(mLoginPhone.getText().toString().trim())) {
@@ -174,16 +193,19 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                 mHintText.setText("手机号");
                 mLoginPhone.setHint("请输入你的手机号码");
                 mLoginCommit.setText("获取验证码");
+                mLoginPhone.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 break;
             case 2:
                 mHintText.setText("验证码");
                 mLoginPhone.setHint("请输入短信验证码");
                 mLoginCommit.setText("下一步");
+                mLoginPhone.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 break;
             case 3:
                 mHintText.setText("设置密码");
                 mLoginPhone.setHint("请设置新的登录密码");
                 mLoginCommit.setText("完成");
+                mLoginPhone.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 break;
         }
     }
