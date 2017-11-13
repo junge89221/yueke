@@ -137,6 +137,8 @@ public class MainActivity extends BaseActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
+        String ua = webSettings.getUserAgentString();
+        webSettings.setUserAgentString(ua+"; yishengyue");
     }
 
     private void loadIndexUrl(String url) {
