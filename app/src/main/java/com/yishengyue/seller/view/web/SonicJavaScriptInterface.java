@@ -150,11 +150,12 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public String getUserId() {
+        Log.e("ssss",Data.getUser()!=null?Data.getUser().getUserId():"");
          return Data.getUser()!=null?Data.getUser().getUserId():"";
     }
     @JavascriptInterface
     public void scanQRcode() {
-        Log.e("sssss","------");
+        Log.e("ssss","------");
                         AndPermission.with(Utils.getContext())
                         .requestCode(100)
                         .permission(Permission.CAMERA)

@@ -21,7 +21,9 @@ import com.yishengyue.seller.api.CommApi;
 import com.yishengyue.seller.api.exception.ApiException;
 import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
+import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.util.Utils;
 
 public class SetPasswordActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private ImageView mActivityClose;
@@ -111,6 +113,7 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
 
                     @Override
                     public void onNext(String value) {
+                        Utils.getSpUtils().put(Constant.PHONE,phone);
                         ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
                         setResult(RESULT_OK);

@@ -93,10 +93,10 @@ public class MainActivity extends BaseActivity {
         if (webView.canGoBack()) {
             webView.goBack();
         } else {
-           if(mNormalDialog.isShowing()) {
-                super.onBackPressed();
-                return;
-            }
+//           if(mNormalDialog.isShowing()) {
+//                super.onBackPressed();
+//                return;
+//            }
             if (!isQuit) {
                 isQuit = true;
                 ToastUtils.showToast(this,"再次点击退出程序", Toast.LENGTH_SHORT).show();
@@ -110,7 +110,8 @@ public class MainActivity extends BaseActivity {
                 timer.schedule(task, 2000);
             } else {
                 ToastUtils.cancelToast();
-                mNormalDialog.show();
+//                mNormalDialog.show();
+                AppManager.getAppManager().AppExit(MainActivity.this);
             }
 
         }
