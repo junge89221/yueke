@@ -21,6 +21,9 @@ import com.yishengyue.seller.api.CommApi;
 import com.yishengyue.seller.api.exception.ApiException;
 import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
+import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.base.User;
+import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.Utils;
@@ -105,19 +108,24 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
                     return;
                 }
 
-                CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<String>(this, true) {
+                CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<User>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
                         ToastUtils.showToast(SetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onNext(String value) {
+                    public void onNext(User value) {
+                        //注册成功后直接登录
                         Utils.getSpUtils().put(Constant.PHONE,phone);
-                        ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
-                        setResult(RESULT_OK);
-                        finish();
+                        Data.setUser(value);
+                        startActivity(new Intent(SetPasswordActivity.this,MainActivity.class));
+                        AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);
+
+//                        ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
+//                        setResult(RESULT_OK);
+//                        finish();
                     }
                 });
                 break;

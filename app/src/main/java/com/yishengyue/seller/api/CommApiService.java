@@ -22,7 +22,7 @@ public interface CommApiService {
      * @return
      */
     @POST("oto/user/register")
-    Observable<ApiResult<String>> register(@Body Map<String, Object> params);
+    Observable<ApiResult<User>> register(@Body Map<String, Object> params);
 
     /**
      * 获取短信验证码
