@@ -1,7 +1,9 @@
 package com.yishengyue.seller;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -52,6 +54,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
      */
     private TextView mLoginFast;
 
+    TextView hintPhone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mLoginFast.setOnClickListener(this);
         mLoginPhone.addTextChangedListener(this);
         mLoginPassword.addTextChangedListener(this);
+        hintPhone = findViewById(R.id.textView4);
     }
 
     @Override
@@ -88,7 +92,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 CommApi.instance().login(mLoginPhone.getText().toString().trim(),mLoginPassword.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this,true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        ToastUtils.showToast(LoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        hintPhone.setText(ex.getMsg());
+                        hintPhone.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                hintPhone.setText( "验证码");
+                                hintPhone.setTextColor(Color.parseColor("#000000"));
+                            }
+                        },2000 );
+
                     }
 
                     @Override

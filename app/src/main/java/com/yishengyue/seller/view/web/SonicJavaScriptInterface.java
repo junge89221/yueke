@@ -166,7 +166,6 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public void scanQRcode() {
-        Log.e("ssss", "------");
         AndPermission.with(Utils.getContext())
                 .requestCode(100)
                 .permission(Permission.CAMERA)

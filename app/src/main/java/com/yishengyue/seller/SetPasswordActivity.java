@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
@@ -25,7 +25,6 @@ import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.Constant;
-import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.Utils;
 
 public class SetPasswordActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
@@ -111,7 +110,16 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
                 CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<User>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        ToastUtils.showToast(SetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+
+                        mTextView4.setText( ex.getMsg());
+                        mTextView4.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView4.setText( "确认密码");
+                                mTextView4.setTextColor(Color.parseColor("#000000"));
+                            }
+                        },2000 );
                     }
 
                     @Override

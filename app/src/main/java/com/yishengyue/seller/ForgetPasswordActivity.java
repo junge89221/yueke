@@ -73,15 +73,23 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
         activity_close.setOnClickListener(this);
         mHintText = (TextView) findViewById(R.id.hint_text);
         mForgetPasswordPage = (TextView) findViewById(R.id.forget_password_page);
-     }
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_commit:
-                if(mPageNo==1){
-                    if(TextUtils.isEmpty(mLoginPhone.getText())){
-                        mHintText.setText( "请输入登录手机号");
+                if (mPageNo == 1) {
+                    if (TextUtils.isEmpty(mLoginPhone.getText())) {
+                        mHintText.setText("请输入登录手机号");
+                        mHintText.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mHintText.setText("设置密码");
+                                mHintText.setTextColor(Color.parseColor("#000000"));
+                            }
+                        }, 2000);
                         return;
                     }
                     if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
@@ -112,7 +120,7 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
 
                         @Override
                         public void onNext(VerifyCodeBean value) {
-                            if(TextUtils.equals(value.getIsReg(),"N")){
+                            if (TextUtils.equals(value.getIsReg(), "N")) {
                                 mHintText.setText("该手机号还没有注册");
                                 mHintText.setTextColor(Color.parseColor("#F34268"));
                                 new Handler().postDelayed(new Runnable() {
@@ -122,15 +130,15 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                                         mHintText.setTextColor(Color.parseColor("#000000"));
                                     }
                                 }, 2000);
-                            }else {
+                            } else {
                                 mVerifyCodeBean = value;
                                 okPhone = mLoginPhone.getText().toString().trim();
                                 mLoginPhone.setText("");
                                 showPage(2);
                             }
-                         }
+                        }
                     });
-                }else if(mPageNo==2){
+                } else if (mPageNo == 2) {
                     if (TextUtils.isEmpty(mLoginPhone.getText().toString().trim())) {
                         mHintText.setText("请输入验证码");
                         mHintText.setTextColor(Color.parseColor("#F34268"));
@@ -158,8 +166,8 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                     mLoginPhone.setText("");
 
                     showPage(3);
-                }else if(mPageNo==3){
-                    if (TextUtils.isEmpty(mLoginPhone.getText().toString().trim())) {
+                } else if (mPageNo == 3) {
+                    if (TextUtils.isEmpty(mLoginPhone.getText().toString())) {
                         mHintText.setText("请输入新密码");
                         mHintText.setTextColor(Color.parseColor("#F34268"));
                         new Handler().postDelayed(new Runnable() {
@@ -171,27 +179,39 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                         }, 2000);
                         return;
                     }
-                   CommApi.instance().forgetPassword(okPhone,mVerifyCodeBean.getVerifyCode(),mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<String>(this,true) {
-                       @Override
-                       protected void onError(ApiException ex) {
-                           mHintText.setText(ex.getMsg());
-                           mHintText.setTextColor(Color.parseColor("#F34268"));
-                           new Handler().postDelayed(new Runnable() {
-                               @Override
-                               public void run() {
-                                   mHintText.setText("设置密码");
-                                   mHintText.setTextColor(Color.parseColor("#000000"));
-                               }
-                           }, 2000);
+                    if (mLoginPhone.getText().length() < 6 || mLoginPhone.getText().length() > 20) {
+                        mHintText.setText("密码有效长度为6-20");
+                        mHintText.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mHintText.setText("设置密码");
+                                mHintText.setTextColor(Color.parseColor("#000000"));
+                            }
+                        }, 2000);
+                        return;
+                    }
+                    CommApi.instance().forgetPassword(okPhone, mVerifyCodeBean.getVerifyCode(), mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<String>(this, true) {
+                        @Override
+                        protected void onError(ApiException ex) {
+                            mHintText.setText(ex.getMsg());
+                            mHintText.setTextColor(Color.parseColor("#F34268"));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mHintText.setText("设置密码");
+                                    mHintText.setTextColor(Color.parseColor("#000000"));
+                                }
+                            }, 2000);
 
-                       }
+                        }
 
-                       @Override
-                       public void onNext(String value) {
-                           finish();
-                           startActivity(new Intent(ForgetPasswordActivity.this,LoginActivity.class));
-                       }
-                   });
+                        @Override
+                        public void onNext(String value) {
+                            finish();
+                            startActivity(new Intent(ForgetPasswordActivity.this, LoginActivity.class));
+                        }
+                    });
                 }
                 break;
             case R.id.activity_close:
@@ -202,10 +222,10 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
 
 
     @SuppressLint("SetTextI18n")
-    private void showPage(int PageNo ) {
+    private void showPage(int PageNo) {
         mPageNo = PageNo;
-        mForgetPasswordPage.setText(PageNo+"/3");
-        switch (PageNo){
+        mForgetPasswordPage.setText(PageNo + "/3");
+        switch (PageNo) {
             case 1:
                 mHintText.setText("手机号");
                 mLoginPhone.setHint("请输入你的手机号码");
