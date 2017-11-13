@@ -125,7 +125,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
                     @Override
                     public void onNext(VerifyCodeBean value) {
-                        if (TextUtils.equals(mVerifyCodeBean.getIsReg(), "Y")) {
+                        if (TextUtils.equals(value.getIsReg(), "Y")) {
                             mTextView4.setText("该手机号已注册");
                             mTextView4.setTextColor(Color.parseColor("#F34268"));
                             new Handler().postDelayed(new Runnable() {

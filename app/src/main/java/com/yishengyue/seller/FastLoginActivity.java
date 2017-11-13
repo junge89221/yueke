@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
@@ -25,7 +24,6 @@ import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.RegexUtils;
-import com.yishengyue.seller.util.ToastUtils;
 
 import java.util.Locale;
 
@@ -93,6 +91,18 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.get_code:
+                if(TextUtils.isEmpty(mLoginPhone.getText())){
+                    mTextView4.setText("请输入登录手机号");
+                    mTextView4.setTextColor(Color.parseColor("#F34268"));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextView4.setText("手机号");
+                            mTextView4.setTextColor(Color.parseColor("#000000"));
+                        }
+                    }, 2000);
+                    return;
+                }
                 if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
                     mTextView4.setText("手机号码格式不正确");
                     mTextView4.setTextColor(Color.parseColor("#F34268"));
@@ -110,14 +120,34 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     protected void onError(ApiException ex) {
                         mGetCode.setEnabled(true);
-                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        mTextView4.setText(ex.getMsg());
+                        mTextView4.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView4.setText("手机号");
+                                mTextView4.setTextColor(Color.parseColor("#000000"));
+                            }
+                        }, 2000);
                     }
 
                     @Override
                     public void onNext(VerifyCodeBean value) {
-                        mVerifyCodeBean = value;
-                        okPhone = mLoginPhone.getText().toString().trim();
-                        countDown.start();
+                        if(TextUtils.equals(value.getIsReg(),"N")){
+                            mTextView4.setText("该手机号还没有注册");
+                            mTextView4.setTextColor(Color.parseColor("#F34268"));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mTextView4.setText("手机号");
+                                    mTextView4.setTextColor(Color.parseColor("#000000"));
+                                }
+                            }, 2000);
+                        }else {
+                            mVerifyCodeBean = value;
+                            okPhone = mLoginPhone.getText().toString().trim();
+                            countDown.start();
+                        }
                     }
                 });
                 break;
@@ -149,7 +179,16 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                 CommApi.instance().fastLogin(mLoginPhone.getText().toString().trim(),mLoginCode.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this,true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        mTextView5.setText( ex.getMsg());
+                        mTextView5.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView5.setText( "验证码");
+                                mTextView5.setTextColor(Color.parseColor("#000000"));
+                            }
+                        },2000 );
+
                     }
 
                     @Override

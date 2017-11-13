@@ -28,7 +28,7 @@ public interface CommApiService {
      * 获取短信验证码
      */
     @GET("verifycode/getVerifyCode")
-    Observable<ApiResult<VerifyCodeBean>> getVerifyCode(@Query("mobile") String mobile);
+    Observable<ApiResult<VerifyCodeBean>> getVerifyCode(@Query("mobile") String mobile,@Query("type") String type);
 
     /**
      * 登录

@@ -57,7 +57,7 @@ public class CommApi extends HttpApi<CommApiService> {
      * @return
      */
     public Observable<VerifyCodeBean> getVerifyCode(String mobile) {
-        return dispose(apiService.getVerifyCode(mobile));
+        return dispose(apiService.getVerifyCode(mobile, "OTO"));
     }
 
 
@@ -69,7 +69,7 @@ public class CommApi extends HttpApi<CommApiService> {
      * @return
      */
     public Observable<User> login(String loginName, String password) {
-        return dispose(apiService.login(loginName,password));
+        return dispose(apiService.login(loginName, password));
     }
 
     /**
