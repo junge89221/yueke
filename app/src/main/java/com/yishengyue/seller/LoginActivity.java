@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -21,8 +22,10 @@ import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.util.AppManager;
+import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.RegexUtils;
 import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.util.Utils;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
 
@@ -55,6 +58,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         ImmersionBar.with(this).init();
         setContentView(R.layout.activity_login);
         initView();
+        mLoginPhone.setText(Data.getPhone());
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
@@ -89,6 +93,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                     @Override
                     public void onNext(User value) {
+                        Utils.getSpUtils().put(Constant.PHONE,mLoginPhone.getText().toString());
                         Data.setUser(value);
                         startActivity(new Intent(LoginActivity.this,MainActivity.class));
                         AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);

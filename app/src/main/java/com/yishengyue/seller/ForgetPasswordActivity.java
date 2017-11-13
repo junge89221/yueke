@@ -144,7 +144,7 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                         return;
                     }
                     if (!mLoginPhone.getText().toString().trim().equals(mVerifyCodeBean.getVerifyCode())) {
-                        mHintText.setText("验证码错误");
+                        mHintText.setText("验证码不正确");
                         mHintText.setTextColor(Color.parseColor("#F34268"));
                         new Handler().postDelayed(new Runnable() {
                             @Override

@@ -23,7 +23,9 @@ import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.AppManager;
+import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.RegexUtils;
+import com.yishengyue.seller.util.Utils;
 
 import java.util.Locale;
 
@@ -66,6 +68,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_fast_login);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initView();
+        mLoginPhone.setText(Data.getPhone());
         countDown = new CountDown(60 * 1000, 1000);
     }
 
@@ -194,6 +197,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void onNext(User value) {
                         Data.setUser(value);
+                        Utils.getSpUtils().put(Constant.PHONE,mLoginPhone.getText().toString());
                         startActivity(new Intent(FastLoginActivity.this,MainActivity.class));
                         AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);
                     }

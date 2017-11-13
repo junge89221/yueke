@@ -15,7 +15,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
@@ -24,7 +24,7 @@ import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.RegexUtils;
-import com.yishengyue.seller.util.ToastUtils;
+
 
 import java.util.Locale;
 
@@ -101,6 +101,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case R.id.get_code:
                 if (TextUtils.isEmpty(mLoginPhone.getText())) {
                     mTextView4.setText("请输入登录手机号");
+                    mTextView4.setTextColor(Color.parseColor("#F34268"));
                     return;
                 }
                 if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
@@ -120,7 +121,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     @Override
                     protected void onError(ApiException ex) {
                         mGetCode.setEnabled(true);
-                        ToastUtils.showToast(RegisterActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        mTextView4.setText(ex.getMsg());
+                        mTextView4.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView4.setText("手机号");
+                                mTextView4.setTextColor(Color.parseColor("#000000"));
+                            }
+                        }, 2000);
                     }
 
                     @Override
