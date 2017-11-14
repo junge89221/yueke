@@ -2,18 +2,25 @@ package com.yishengyue.seller;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -65,6 +72,7 @@ public class MainActivity extends BaseActivity {
     private ValueCallback webValueCallbackBefore5; // 5.0以下回调
     private ValueCallback<Uri[]> webValueCallbackLater5;// 5.0以上回调
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +85,8 @@ public class MainActivity extends BaseActivity {
         loadIndexUrl(BuildConfig.WEB_INDEX);
         initExitDialog();
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -173,6 +183,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    boolean isItemClicked = false;
     private void showPhotoSelectDialog() {
         final String[] stringItems = {"拍照", "相册"};
         final ActionSheetDialog dialog = new ActionSheetDialog(this, stringItems, null);
@@ -186,12 +197,15 @@ public class MainActivity extends BaseActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                onPhotoSelectedCallback(null);
+                if(!isItemClicked)onPhotoSelectedCallback(null);
+                isItemClicked = false;
+
             }
         });
         dialog.setOnOperItemClickL(new OnOperItemClickL() {
             @Override
             public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
+                isItemClicked = true;
                 if (position == 0) {
                     PhotoPicker.takePhoto(MainActivity.this, new PhotoPicker.PhotoPickerCallBack() {
                         @Override

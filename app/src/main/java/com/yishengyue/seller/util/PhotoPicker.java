@@ -148,7 +148,7 @@ public class PhotoPicker {
             switch (requestCode) {
                 case REQUEST_PHOTO_FROM_CAMERA:
                 case REQUEST_PHOTO_FROM_CROP:
-
+                    compressPicture(context, photoFilePath);
                     break;
                 case REQUEST_PHOTO_FROM_GALLERY:
                     Uri uri = data.getData();
