@@ -12,10 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.widget.Toast;
+
 
 import com.yishengyue.seller.SellerApplication;
 
@@ -24,6 +27,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 public class PhotoPicker {
 
@@ -108,50 +120,50 @@ public class PhotoPicker {
 
     public static void onRequestPermissionsResult(Activity activity, int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-        case REQUEST_TAKE_PHOTO_PERMISSIONS:
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    ToastUtils.showToast(activity, "没有拍照权限或sdcard写入权限！", Toast.LENGTH_SHORT).show();
-                    pickerCallBack.onCancel();
-                    return;
+            case REQUEST_TAKE_PHOTO_PERMISSIONS:
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        ToastUtils.showToast(activity, "没有拍照权限或sdcard写入权限！", Toast.LENGTH_SHORT).show();
+                        pickerCallBack.onCancel();
+                        return;
+                    }
                 }
-            }
-            takePhoto(activity, pickerCallBack);
-            break;
-        case REQUEST_FILE_PERMISSIONS:
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    ToastUtils.showToast(activity, "没有sdcard读取权限！", Toast.LENGTH_SHORT).show();
-                    pickerCallBack.onCancel();
-                    return;
+                takePhoto(activity, pickerCallBack);
+                break;
+            case REQUEST_FILE_PERMISSIONS:
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        ToastUtils.showToast(activity, "没有sdcard读取权限！", Toast.LENGTH_SHORT).show();
+                        pickerCallBack.onCancel();
+                        return;
+                    }
                 }
-            }
-            pickPhoto(activity, pickerCallBack);
-            break;
+                pickPhoto(activity, pickerCallBack);
+                break;
         }
     }
 
-    public static void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public static void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-            case REQUEST_PHOTO_FROM_CAMERA:
-            case REQUEST_PHOTO_FROM_CROP:
-                pickerCallBack.callBack(photoFilePath);
-                break;
-            case REQUEST_PHOTO_FROM_GALLERY:
-                Uri uri = data.getData();
-                try {
-                    Cursor cursor = SellerApplication.getApplication().getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
-                    assert cursor != null;
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                    photoFilePath = cursor.getString(columnIndex);
-                    cursor.close();
-                } catch (Exception e) {
-                    photoFilePath = uri.getPath();
-                }
-                pickerCallBack.callBack(photoFilePath);
-                break;
+                case REQUEST_PHOTO_FROM_CAMERA:
+                case REQUEST_PHOTO_FROM_CROP:
+
+                    break;
+                case REQUEST_PHOTO_FROM_GALLERY:
+                    Uri uri = data.getData();
+                    try {
+                        Cursor cursor = SellerApplication.getApplication().getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+                        assert cursor != null;
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                        photoFilePath = cursor.getString(columnIndex);
+                        cursor.close();
+                    } catch (Exception e) {
+                        photoFilePath = uri.getPath();
+                    };
+                    compressPicture(context, photoFilePath);
+                    break;
             }
 
         } else {
@@ -159,6 +171,35 @@ public class PhotoPicker {
                 pickerCallBack.onCancel();
             }
         }
+    }
+
+    private static String compressPicturePath;
+
+    public static void compressPicture(final Context context, final String path) {
+        Luban.with(context)
+                .load(path)                                   // 传人要压缩的图片列表
+                .ignoreBy(100)                                  // 忽略不压缩图片的大小
+                .setCompressListener(new OnCompressListener() { //设置回调
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(File file) {
+                        compressPicturePath = file.getAbsolutePath();
+                        if (compressPicturePath == null) {
+                            pickerCallBack.callBack(photoFilePath);
+                        } else {
+                            pickerCallBack.callBack(compressPicturePath);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                }).launch();
     }
 
     private static boolean requestTakePhotoPermissions(Activity activity) {

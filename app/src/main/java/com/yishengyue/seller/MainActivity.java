@@ -3,12 +3,14 @@ package com.yishengyue.seller;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -85,7 +87,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        PhotoPicker.onActivityResult(requestCode, resultCode, data);
+        PhotoPicker.onActivityResult(this,requestCode, resultCode, data);
     }
 
     @Override
@@ -181,7 +183,12 @@ public class MainActivity extends BaseActivity {
                 .titleTextColor(0xFF8F8E94)
                 .cornerRadius(12)
                 .show();
-
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                onPhotoSelectedCallback(null);
+            }
+        });
         dialog.setOnOperItemClickL(new OnOperItemClickL() {
             @Override
             public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
