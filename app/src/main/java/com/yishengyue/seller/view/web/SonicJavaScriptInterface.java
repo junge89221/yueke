@@ -151,7 +151,6 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public String getUserId() {
-
         JSONObject result = new JSONObject();
         try {
             result.put("userId", Data.getUser() != null ? Data.getUser().getUserId() : "");

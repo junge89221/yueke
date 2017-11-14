@@ -2,19 +2,20 @@ package com.yishengyue.seller;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
@@ -26,7 +27,6 @@ import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.RegexUtils;
-import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.Utils;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
@@ -55,6 +55,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private TextView mLoginFast;
 
     TextView hintPhone;
+    FrameLayout rootFrame;
+    RelativeLayout dialogRelative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mLoginPhone.setText(Data.getPhone());
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-
 
     private void initView() {
         mActivityClose = (ImageView) findViewById(R.id.activity_close);
@@ -80,7 +81,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mLoginPhone.addTextChangedListener(this);
         mLoginPassword.addTextChangedListener(this);
         hintPhone = findViewById(R.id.textView4);
+        rootFrame = findViewById(R.id.root);
+        dialogRelative = findViewById(R.id.dialog_relative);
+        moveDialog(rootFrame,dialogRelative);
     }
+
+
 
     @Override
     public void onClick(View v) {

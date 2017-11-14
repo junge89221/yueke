@@ -13,7 +13,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -62,7 +64,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
      * 验证码
      */
     private TextView mTextView5;
-
+    FrameLayout rootFrame;
+    RelativeLayout dialogRelative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +93,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mLoginCode.addTextChangedListener(this);
         mTextView4 = (TextView) findViewById(R.id.textView4);
         mTextView5 = (TextView) findViewById(R.id.textView5);
+        rootFrame = findViewById(R.id.root);
+        dialogRelative = findViewById(R.id.dialog_relative);
+        moveDialog(rootFrame,dialogRelative);
     }
 
     @Override

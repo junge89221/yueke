@@ -11,7 +11,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gyf.barlibrary.ImmersionBar;
@@ -60,7 +62,8 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
      * 验证码
      */
     private TextView mTextView5;
-
+    FrameLayout rootFrame;
+    RelativeLayout dialogRelative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +88,9 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
         mLoginPhone.addTextChangedListener(this);
         mLoginCode.addTextChangedListener(this);
         mTextView5 = (TextView) findViewById(R.id.textView5);
+        rootFrame = findViewById(R.id.root);
+        dialogRelative = findViewById(R.id.dialog_relative);
+        moveDialog(rootFrame,dialogRelative);
     }
 
     @Override
