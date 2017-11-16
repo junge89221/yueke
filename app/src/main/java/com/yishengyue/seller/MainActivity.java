@@ -10,14 +10,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -71,6 +70,9 @@ public class MainActivity extends BaseActivity {
     private SonicSession sonicSession;
     private ValueCallback webValueCallbackBefore5; // 5.0以下回调
     private ValueCallback<Uri[]> webValueCallbackLater5;// 5.0以上回调
+    private boolean needBackToHomePage = false; // 是否需要跳转到首页
+    private boolean needClearBackClickedTimes = false; // 是否需要清除返回按键点击次数
+    private int backClickedTimes = 0;
 
 
     @Override
@@ -79,8 +81,8 @@ public class MainActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_main);
 
-        progressbar = (ProgressBar) findViewById(R.id.progress_bar);
-        webView = (WebView) findViewById(R.id.web_view);
+        progressbar = findViewById(R.id.progress_bar);
+        webView = findViewById(R.id.web_view);
         initWebSettings(webView);
         loadIndexUrl(BuildConfig.WEB_INDEX);
         initExitDialog();
@@ -97,21 +99,33 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        PhotoPicker.onActivityResult(this,requestCode, resultCode, data);
+        PhotoPicker.onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
     public void onBackPressed() {
         if (webView.canGoBack()) {
-            webView.goBack();
+            backClickedTimes++;
+            if (!needClearBackClickedTimes) {
+                needClearBackClickedTimes = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        needClearBackClickedTimes = false;
+                        backClickedTimes = 0;
+                    }
+                }, 6000);
+            }
+            if (backClickedTimes >= 4) {
+                needBackToHomePage = true;
+                loadIndexUrl(BuildConfig.WEB_INDEX);
+            } else {
+                webView.goBack();
+            }
         } else {
-//           if(mNormalDialog.isShowing()) {
-//                super.onBackPressed();
-//                return;
-//            }
             if (!isQuit) {
                 isQuit = true;
-                ToastUtils.showToast(this,"再次点击退出程序", Toast.LENGTH_SHORT).show();
+                ToastUtils.showToast(this, "再次点击退出程序", Toast.LENGTH_SHORT).show();
                 TimerTask task = null;
                 task = new TimerTask() {
                     @Override
@@ -122,7 +136,6 @@ public class MainActivity extends BaseActivity {
                 timer.schedule(task, 2000);
             } else {
                 ToastUtils.cancelToast();
-//                mNormalDialog.show();
                 AppManager.getAppManager().AppExit(MainActivity.this);
             }
 
@@ -150,7 +163,7 @@ public class MainActivity extends BaseActivity {
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         String ua = webSettings.getUserAgentString();
-        webSettings.setUserAgentString(ua+"; yishengyue");
+        webSettings.setUserAgentString(ua + "; yishengyue");
     }
 
     private void loadIndexUrl(String url) {
@@ -278,6 +291,15 @@ public class MainActivity extends BaseActivity {
         }
 
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            if (needBackToHomePage) {
+                needBackToHomePage = false;
+                webView.clearHistory();//清除历史记录
+            }
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (url.startsWith("tel")) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -379,6 +401,7 @@ public class MainActivity extends BaseActivity {
             return "";
         }
     }
+
     private Boolean isQuit = false;
     private Timer timer = new Timer();
     private NormalDialog mNormalDialog;
