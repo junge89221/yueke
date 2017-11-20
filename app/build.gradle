@@ -18,8 +18,8 @@ android {
         debug {
             buildConfigField("String", "API_HOST", api_host_151)
             buildConfigField("String", "PAY_HOST", pay_host_151)
-//            buildConfigField("String", "WEB_INDEX", "\"http://twap.yishengyue.cn/o2o/index.html#\"")
-            buildConfigField("String", "WEB_INDEX", "\"http://192.168.0.66:8080/#/\"")
+            buildConfigField("String", "WEB_INDEX", "\"http://twap.yishengyue.cn/o2o/index.html#\"")
+//            buildConfigField("String", "WEB_INDEX", "\"http://192.168.0.66:8080/#/\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
