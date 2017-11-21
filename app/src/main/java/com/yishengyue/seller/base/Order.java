@@ -40,7 +40,7 @@ public class Order {
     private String receiverPhone;
     private String productImage;
     private String productJingle;
-    private int productPrice;
+    private double productPrice;
 
     public String getAddTime() {
         return addTime;
@@ -146,11 +146,11 @@ public class Order {
         this.productJingle = productJingle;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 }

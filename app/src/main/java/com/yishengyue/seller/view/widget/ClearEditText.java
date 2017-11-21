@@ -53,7 +53,7 @@ public class ClearEditText extends EditText implements View.OnFocusChangeListene
         // 设置焦点改变的监听
         setOnFocusChangeListener(this);
 
-        setPadding(getPaddingLeft(),getPaddingTop(),50,getBottom());
+
         // 设置输入框里面内容发生改变的监听
         addTextChangedListener(this);
     }
