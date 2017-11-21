@@ -64,25 +64,24 @@
             android:textSize="11sp"
             />
 
-        <EditText
-            android:maxLength="11"
+        <com.yishengyue.seller.view.widget.ClearEditText
             android:id="@+id/login_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView4"
-            android:layout_marginEnd="34dp"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="6dp"
+            android:layout_alignStart="@+id/login_password"
+            android:layout_below="@+id/textView4"
             android:background="@drawable/login_edittext_bg"
             android:gravity="center"
             android:hint="请输入你的手机号码"
             android:inputType="phone"
+            android:maxLength="11"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:singleLine="true"
             android:textColor="#1A1A1A"
+            android:layout_marginEnd="34dp"
             android:textColorHint="#BFC9D4"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
 
 
         <TextView
