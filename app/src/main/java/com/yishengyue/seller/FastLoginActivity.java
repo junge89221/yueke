@@ -11,9 +11,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
@@ -24,8 +25,9 @@ import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.User;
 import com.yishengyue.seller.base.VerifyCodeBean;
 import com.yishengyue.seller.util.AppManager;
+import com.yishengyue.seller.util.Constant;
 import com.yishengyue.seller.util.RegexUtils;
-import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.util.Utils;
 
 import java.util.Locale;
 
@@ -60,7 +62,8 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
      * 验证码
      */
     private TextView mTextView5;
-
+    FrameLayout rootFrame;
+    RelativeLayout dialogRelative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +71,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_fast_login);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initView();
+        mLoginPhone.setText(Data.getPhone());
         countDown = new CountDown(60 * 1000, 1000);
     }
 
@@ -84,6 +88,9 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
         mLoginPhone.addTextChangedListener(this);
         mLoginCode.addTextChangedListener(this);
         mTextView5 = (TextView) findViewById(R.id.textView5);
+        rootFrame = findViewById(R.id.root);
+        dialogRelative = findViewById(R.id.dialog_relative);
+        moveDialog(rootFrame,dialogRelative);
     }
 
     @Override
@@ -93,6 +100,18 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.get_code:
+                if(TextUtils.isEmpty(mLoginPhone.getText())){
+                    mTextView4.setText("请输入登录手机号");
+                    mTextView4.setTextColor(Color.parseColor("#F34268"));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextView4.setText("手机号");
+                            mTextView4.setTextColor(Color.parseColor("#000000"));
+                        }
+                    }, 2000);
+                    return;
+                }
                 if (!RegexUtils.checkPhone(mLoginPhone.getText().toString().trim())) {
                     mTextView4.setText("手机号码格式不正确");
                     mTextView4.setTextColor(Color.parseColor("#F34268"));
@@ -110,14 +129,34 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     protected void onError(ApiException ex) {
                         mGetCode.setEnabled(true);
-                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        mTextView4.setText(ex.getMsg());
+                        mTextView4.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView4.setText("手机号");
+                                mTextView4.setTextColor(Color.parseColor("#000000"));
+                            }
+                        }, 2000);
                     }
 
                     @Override
                     public void onNext(VerifyCodeBean value) {
-                        mVerifyCodeBean = value;
-                        okPhone = mLoginPhone.getText().toString().trim();
-                        countDown.start();
+                        if(TextUtils.equals(value.getIsReg(),"N")){
+                            mTextView4.setText("该手机号还没有注册");
+                            mTextView4.setTextColor(Color.parseColor("#F34268"));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mTextView4.setText("手机号");
+                                    mTextView4.setTextColor(Color.parseColor("#000000"));
+                                }
+                            }, 2000);
+                        }else {
+                            mVerifyCodeBean = value;
+                            okPhone = mLoginPhone.getText().toString().trim();
+                            countDown.start();
+                        }
                     }
                 });
                 break;
@@ -149,12 +188,22 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                 CommApi.instance().fastLogin(mLoginPhone.getText().toString().trim(),mLoginCode.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this,true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        ToastUtils.showToast(FastLoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+                        mTextView5.setText( ex.getMsg());
+                        mTextView5.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView5.setText( "验证码");
+                                mTextView5.setTextColor(Color.parseColor("#000000"));
+                            }
+                        },2000 );
+
                     }
 
                     @Override
                     public void onNext(User value) {
                         Data.setUser(value);
+                        Utils.getSpUtils().put(Constant.PHONE,mLoginPhone.getText().toString());
                         startActivity(new Intent(FastLoginActivity.this,MainActivity.class));
                         AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);
                     }

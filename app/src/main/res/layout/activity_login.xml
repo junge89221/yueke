@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
+    android:id="@+id/root"
     tools:context="com.yishengyue.seller.LoginActivity">
 
     <ImageView
@@ -15,6 +16,7 @@
         android:src="@mipmap/artboard"/>
 
     <RelativeLayout
+        android:id="@+id/dialog_relative"
         android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

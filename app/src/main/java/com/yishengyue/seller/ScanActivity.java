@@ -84,14 +84,19 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
      */
     @Override
     public void onScanQRCodeSuccess(String result) {
-         vibrate();
-        String consumeVerifyCode = Uri.parse(result).getQueryParameter("consumeVerifyCode");
+        Log.e("ssss","=="+result);
+         vibrate();//震动
+//        String consumeVerifyCode = Uri.parse(result).getQueryParameter("consumeVerifyCode");
+        String[] array = result.split("consumeVerifyCode=");
+        String consumeVerifyCode = array[1];
+        Log.e("ssss","=="+consumeVerifyCode);
         if (TextUtils.isEmpty(consumeVerifyCode)||consumeVerifyCode.length() != 12) {
-            ToastUtils.showToast(this, "错误的二维码", Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast(this, "消费验证码已使用或不存在", Toast.LENGTH_SHORT).show();
             mQRCodeView.startSpot();
             return;
         }
-        CommApi.instance().getOrderDetail(Data.getUser().getUserId(), result).subscribe(new SimpleSubscriber<Order>(this, true) {
+
+        CommApi.instance().getOrderDetail(Data.getUser().getUserId(), consumeVerifyCode).subscribe(new SimpleSubscriber<Order>(this, true) {
             @Override
             protected void onError(ApiException ex) {
                 mQRCodeView.startSpot();
@@ -125,7 +130,7 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.input_code:
-                startActivity(new Intent(this,InputCodeActivity.class));
+                startActivityForResult(new Intent(this,InputCodeActivity.class),1);
                 break;
             case R.id.open_flash:
                 if (flashIsOpen) {
@@ -144,5 +149,13 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
     @Override
     public void onResult(boolean Success) {
         mQRCodeView.startSpot();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1&&resultCode==RESULT_OK){
+            finish();
+        }
     }
 }

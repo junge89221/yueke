@@ -22,13 +22,13 @@ public interface CommApiService {
      * @return
      */
     @POST("oto/user/register")
-    Observable<ApiResult<String>> register(@Body Map<String, Object> params);
+    Observable<ApiResult<User>> register(@Body Map<String, Object> params);
 
     /**
      * 获取短信验证码
      */
     @GET("verifycode/getVerifyCode")
-    Observable<ApiResult<VerifyCodeBean>> getVerifyCode(@Query("mobile") String mobile);
+    Observable<ApiResult<VerifyCodeBean>> getVerifyCode(@Query("mobile") String mobile,@Query("type") String type);
 
     /**
      * 登录

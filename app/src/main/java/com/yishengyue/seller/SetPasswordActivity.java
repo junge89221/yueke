@@ -12,16 +12,22 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
 import com.yishengyue.seller.api.exception.ApiException;
 import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
-import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.base.User;
+import com.yishengyue.seller.util.AppManager;
+import com.yishengyue.seller.util.Constant;
+import com.yishengyue.seller.util.Utils;
 
 public class SetPasswordActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private ImageView mActivityClose;
@@ -49,7 +55,8 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
      * 登录密码
      */
     private TextView mTextView4;
-
+    FrameLayout rootFrame;
+    RelativeLayout dialogRelative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +85,17 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
         mLoginPhone.addTextChangedListener(this);
         mLoginCode.addTextChangedListener(this);
         mTextView4 = (TextView) findViewById(R.id.textView5);
+
+        rootFrame = findViewById(R.id.root);
+        dialogRelative = findViewById(R.id.dialog_relative);
+        moveDialog(rootFrame,dialogRelative);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_close:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.get_code:
@@ -102,17 +114,33 @@ public class SetPasswordActivity extends BaseActivity implements View.OnClickLis
                     return;
                 }
 
-                CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<String>(this, true) {
+                CommApi.instance().register(phone, mLoginPhone.getText().toString().trim(), VerifyCode).subscribe(new SimpleSubscriber<User>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
-                        ToastUtils.showToast(SetPasswordActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
+
+                        mTextView4.setText( ex.getMsg());
+                        mTextView4.setTextColor(Color.parseColor("#F34268"));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView4.setText( "确认密码");
+                                mTextView4.setTextColor(Color.parseColor("#000000"));
+                            }
+                        },2000 );
                     }
 
                     @Override
-                    public void onNext(String value) {
-                        ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
-                        finish();
+                    public void onNext(User value) {
+                        //注册成功后直接登录
+                        Utils.getSpUtils().put(Constant.PHONE,phone);
+                        Data.setUser(value);
+                        startActivity(new Intent(SetPasswordActivity.this,MainActivity.class));
+                        AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);
+
+//                        ToastUtils.showToast(SetPasswordActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(SetPasswordActivity.this, LoginActivity.class));
+//                        setResult(RESULT_OK);
+//                        finish();
                     }
                 });
                 break;

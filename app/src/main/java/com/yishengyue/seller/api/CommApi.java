@@ -41,7 +41,7 @@ public class CommApi extends HttpApi<CommApiService> {
      * @param verifyCode
      * @return
      */
-    public Observable<String> register(String loginName, String password, String verifyCode) {
+    public Observable<User> register(String loginName, String password, String verifyCode) {
         Map<String, Object> params = new HashMap<>();
         params.put("loginName", loginName);
         params.put("password", password);
@@ -57,7 +57,7 @@ public class CommApi extends HttpApi<CommApiService> {
      * @return
      */
     public Observable<VerifyCodeBean> getVerifyCode(String mobile) {
-        return dispose(apiService.getVerifyCode(mobile));
+        return dispose(apiService.getVerifyCode(mobile, "OTO"));
     }
 
 
@@ -69,7 +69,7 @@ public class CommApi extends HttpApi<CommApiService> {
      * @return
      */
     public Observable<User> login(String loginName, String password) {
-        return dispose(apiService.login(loginName,password));
+        return dispose(apiService.login(loginName, password));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.yishengyue.seller.view.widget;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -115,6 +116,7 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
                            public void onNext(String value) {
                                if(mActivateResultListener!=null)mActivateResultListener.onResult(true);
                                ToastUtils.showToast(mContext, "核销成功", Toast.LENGTH_SHORT).show();
+                               ((Activity)mContext).finish();
                                dismiss();
                            }
                        });

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
+    android:id="@+id/root"
     tools:context="com.yishengyue.seller.LoginActivity">
 
     <ImageView
@@ -15,6 +16,7 @@
         android:src="@mipmap/artboard"/>
 
     <RelativeLayout
+        android:id="@+id/dialog_relative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -114,7 +116,6 @@
                 android:background="@drawable/login_edittext_bg"
                 android:gravity="center"
                 android:hint="请输入验证码"
-                android:inputType="textPassword"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:singleLine="true"

@@ -2,6 +2,9 @@ package com.yishengyue.seller.base;
 
 import android.content.Context;
 
+import com.yishengyue.seller.util.Constant;
+import com.yishengyue.seller.util.Utils;
+
 /**
  * <pre>
  *     author: Blankj
@@ -24,6 +27,10 @@ public class Data {
 
     private static User User;
 
+
+    public static String getPhone(){
+        return Utils.getSpUtils().getString(Constant.PHONE);
+    }
 
 
     public static boolean isLogin() {

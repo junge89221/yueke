@@ -18,7 +18,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.google.gson.Gson;
 import com.tencent.sonic.sdk.SonicDiffDataCallback;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -27,6 +26,7 @@ import com.yishengyue.seller.ScanActivity;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.util.Utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -110,39 +110,39 @@ public class SonicJavaScriptInterface {
 
 
             switch (c) {
-            case '"':
-            case '\\':
-            case '/':
-                out.append('\\').append(c);
-                break;
+                case '"':
+                case '\\':
+                case '/':
+                    out.append('\\').append(c);
+                    break;
 
-            case '\t':
-                out.append("\\t");
-                break;
+                case '\t':
+                    out.append("\\t");
+                    break;
 
-            case '\b':
-                out.append("\\b");
-                break;
+                case '\b':
+                    out.append("\\b");
+                    break;
 
-            case '\n':
-                out.append("\\n");
-                break;
+                case '\n':
+                    out.append("\\n");
+                    break;
 
-            case '\r':
-                out.append("\\r");
-                break;
+                case '\r':
+                    out.append("\\r");
+                    break;
 
-            case '\f':
-                out.append("\\f");
-                break;
+                case '\f':
+                    out.append("\\f");
+                    break;
 
-            default:
-                if (c <= 0x1F) {
-                    out.append(String.format("\\u%04x", (int) c));
-                } else {
-                    out.append(c);
-                }
-                break;
+                default:
+                    if (c <= 0x1F) {
+                        out.append(String.format("\\u%04x", (int) c));
+                    } else {
+                        out.append(c);
+                    }
+                    break;
             }
 
         }
@@ -151,26 +151,37 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public String getUserId() {
-         return Data.getUser()!=null?new Gson().toJson(Data.getUser()):"";
+        JSONObject result = new JSONObject();
+        try {
+            result.put("userId", Data.getUser() != null ? Data.getUser().getUserId() : "");
+            result.put("accessToken", Data.getUser().getAccessToken());
+            return result.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+
     }
+
     @JavascriptInterface
     public void scanQRcode() {
-                        AndPermission.with(Utils.getContext())
-                        .requestCode(100)
-                        .permission(Permission.CAMERA)
-                        .callback(new PermissionListener() {
-                            @Override
-                            public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
-                                Log.e("==========", "onSucceed===" + requestCode + "===grantPermissions===" + grantPermissions);
-                                Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                Utils.getContext().startActivity(intent);
-                            }
-                            @Override
-                            public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
-                                Log.e("==========", "onFailed===" + requestCode + "===deniedPermissions===" + deniedPermissions);
-                            }
-                        })
-                        .start();
+        AndPermission.with(Utils.getContext())
+                .requestCode(100)
+                .permission(Permission.CAMERA)
+                .callback(new PermissionListener() {
+                    @Override
+                    public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
+                        Log.e("==========", "onSucceed===" + requestCode + "===grantPermissions===" + grantPermissions);
+                        Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Utils.getContext().startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
+                        Log.e("==========", "onFailed===" + requestCode + "===deniedPermissions===" + deniedPermissions);
+                    }
+                })
+                .start();
     }
 }
