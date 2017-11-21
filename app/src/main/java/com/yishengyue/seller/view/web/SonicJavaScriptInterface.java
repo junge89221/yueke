@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.google.gson.Gson;
 import com.tencent.sonic.sdk.SonicDiffDataCallback;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -150,7 +151,7 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public String getUserId() {
-         return Data.getUser()!=null?Data.getUser().getUserId():"";
+         return Data.getUser()!=null?new Gson().toJson(Data.getUser()):"";
     }
     @JavascriptInterface
     public void scanQRcode() {
@@ -165,7 +166,6 @@ public class SonicJavaScriptInterface {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Utils.getContext().startActivity(intent);
                             }
-
                             @Override
                             public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
                                 Log.e("==========", "onFailed===" + requestCode + "===deniedPermissions===" + deniedPermissions);
