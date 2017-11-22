@@ -18,6 +18,8 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 
+import com.yishengyue.seller.SellerApplication;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;

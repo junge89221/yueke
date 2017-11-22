@@ -6,11 +6,7 @@ import android.support.multidex.MultiDexApplication;
 import com.yishengyue.seller.util.Utils;
 
 /**
- * <pre>
- * author：张俊
- * date： 2017/11/2
- * desc：
- * <pre>
+ * Created by zhangli on 2017/11/22
  */
 
 public class SellerApplication extends MultiDexApplication {
