@@ -115,9 +115,9 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
                            @Override
                            public void onNext(String value) {
                                if(mActivateResultListener!=null)mActivateResultListener.onResult(true);
-                               ToastUtils.showToast(mContext, "核销成功", Toast.LENGTH_SHORT).show();
-                               ((Activity)mContext).finish();
+                               ToastUtils.showToast(mContext, "激活成功", Toast.LENGTH_SHORT).show();
                                dismiss();
+                               ((Activity)mContext).finish();
                            }
                        });
                    }
