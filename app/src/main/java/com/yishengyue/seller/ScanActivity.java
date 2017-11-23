@@ -19,7 +19,10 @@ import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.Order;
 import com.yishengyue.seller.util.ToastUtils;
+import com.yishengyue.seller.util.UrlUtils;
 import com.yishengyue.seller.view.widget.ActivateDialog;
+
+import java.util.Map;
 
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zbar.ZBarView;
@@ -86,12 +89,15 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
     public void onScanQRCodeSuccess(String result) {
         Log.e("ssss","=="+result);
          vibrate();//震动
-//        String consumeVerifyCode = Uri.parse(result).getQueryParameter("consumeVerifyCode");
-        String[] array = result.split("consumeVerifyCode=");
-        String consumeVerifyCode = array[1];
+        String consumeVerifyCode = null;
+         try {
+            consumeVerifyCode = UrlUtils.URLRequest(result).get("consumeverifycode");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Log.e("ssss","=="+consumeVerifyCode);
         if (TextUtils.isEmpty(consumeVerifyCode)||consumeVerifyCode.length() != 12) {
-            ToastUtils.showToast(this, "消费验证码已使用或不存在", Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast(this, "消费验证码不存在", Toast.LENGTH_SHORT).show();
             mQRCodeView.startSpot();
             return;
         }
