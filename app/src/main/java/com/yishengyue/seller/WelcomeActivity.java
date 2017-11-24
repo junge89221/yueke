@@ -3,12 +3,27 @@ package com.yishengyue.seller;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.yishengyue.seller.api.exception.ApiException;
+import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
+import com.yishengyue.seller.util.Constant;
+import com.yishengyue.seller.util.DataCleanManager;
+import com.yishengyue.seller.util.Utils;
+import com.yishengyue.seller.view.widget.SplashView;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class WelcomeActivity extends BaseActivity implements View.OnClickListener {
 
@@ -44,10 +59,9 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this, LoginActivity.class));
 //                startActivity(new Intent(this, InputCodeActivity.class));
 //                new ActivateDialog(this).show();
-                break;
+                 break;
             case R.id.textView7://注册
-                startActivity(new Intent(this, RegisterActivity.class));
-
+                 startActivity(new Intent(this, RegisterActivity.class));
 //                AndPermission.with(this)
 //                        .requestCode(100)
 //                        .permission(Permission.CAMERA)

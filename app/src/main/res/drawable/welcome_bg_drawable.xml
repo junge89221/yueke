@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+     >
+    <item >
+        <color android:color="#ffffff"/>
+    </item>
+
+<!--    <item >
+        <bitmap
+            android:gravity="top|fill"
+            android:id="@+id/bitmap_center"
+            android:src="@mipmap/welcome_center_default_image">
+        </bitmap>
+    </item>-->
+    <item  >
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:id="@+id/bitmap_splash"
+             android:src="@mipmap/welcome_bottom_image">
+        </bitmap>
+    </item>
+
+
+
+</layer-list>
+

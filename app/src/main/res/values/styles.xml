@@ -28,6 +28,7 @@
     </style>
 
     <style name="SplashTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/welcome_bg_drawable</item>
          <item name="colorAccent">@color/ColorFFFF</item>
         <item name="colorPrimary">@color/ColorFFFF</item>
         <item name="colorPrimaryDark">@color/ColorFFFF</item>

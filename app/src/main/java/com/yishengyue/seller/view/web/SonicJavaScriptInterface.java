@@ -17,19 +17,32 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.widget.Toast;
 
 import com.tencent.sonic.sdk.SonicDiffDataCallback;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.PermissionListener;
+import com.yishengyue.seller.LoginActivity;
 import com.yishengyue.seller.ScanActivity;
+import com.yishengyue.seller.api.exception.ApiException;
+import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.Data;
+import com.yishengyue.seller.util.AppManager;
+import com.yishengyue.seller.util.DataCleanManager;
+import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Sonic javaScript Interface (Android API Level >= 17)
@@ -171,17 +184,67 @@ public class SonicJavaScriptInterface {
                 .callback(new PermissionListener() {
                     @Override
                     public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
-                        Log.e("==========", "onSucceed===" + requestCode + "===grantPermissions===" + grantPermissions);
-                        Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
+                         Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         Utils.getContext().startActivity(intent);
                     }
 
                     @Override
                     public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
-                        Log.e("==========", "onFailed===" + requestCode + "===deniedPermissions===" + deniedPermissions);
-                    }
+                     }
                 })
                 .start();
     }
+    @JavascriptInterface
+    public void clearCache() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> subscriber) throws Exception {
+                try {
+                    DataCleanManager.cleanApplicationData(Utils.getContext());
+                    subscriber.onNext(true);
+                    subscriber.onComplete();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleSubscriber<Boolean>() {
+                    @Override
+                    protected void onError(ApiException ex) {
+                        Toast.makeText(Utils.getContext(), "无法清除缓存", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(Boolean s) {
+                        if (s) {
+                            Toast.makeText(Utils.getContext(), "清除成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Utils.getContext(), "无法清除缓存", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    @JavascriptInterface
+    public String getCachesize() {
+        String cacheSize = null;
+        try {
+            cacheSize = DataCleanManager.getCacheSize(Utils.getContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  cacheSize;
+    }
+
+
+    @JavascriptInterface
+    public void toLogin() {
+        Utils.getContext().startActivity(new Intent(Utils.getContext(), LoginActivity.class));
+        AppManager.getAppManager().finishNotSpecifiedActivity(LoginActivity.class);
+    }
+
 }
