@@ -68,6 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
+                    android:layout_marginBottom="9dp"
                     android:text="游泳好去处"
                     android:textColor="#B1B1B1"
                     android:textSize="12sp"/>
@@ -77,7 +78,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
-                    android:layout_marginTop="9dp"
                     android:text="价格：¥ 210.00"
                     android:textColor="#1A1A1A"
                     android:textSize="13sp"/>
@@ -91,7 +91,11 @@
                     android:textSize="13sp"/>
             </LinearLayout>
         </LinearLayout>
-
+<LinearLayout
+    android:id="@+id/coupon_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
         <View
             android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
@@ -130,6 +134,7 @@
             android:text="收货地址：四川成都市青羊区苏坡街道东坡北二路621号2-2-102，高元，18602819355"
             android:textColor="#AAB4BE"
             android:textSize="14sp"/>
+</LinearLayout>
        <!-- <TextView
             android:id="@+id/product_order_bill"
             android:layout_marginTop="5dp"
