@@ -1,7 +1,6 @@
 package com.yishengyue.seller;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,7 +42,7 @@ public class InputCodeActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void onNext(Order value) {
                         setResult(RESULT_OK);
-                        new ActivateDialog(InputCodeActivity.this,value,InputCodeActivity.this).show();
+                        new ActivateDialog(InputCodeActivity.this,value, finalQrCodeBean.getBusinessTypeCode(), InputCodeActivity.this).show();
 
                     }
                 });

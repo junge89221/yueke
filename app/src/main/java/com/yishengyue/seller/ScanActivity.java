@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.gyf.barlibrary.ImmersionBar;
 import com.yishengyue.seller.api.CommApi;
 import com.yishengyue.seller.api.exception.ApiException;
@@ -18,6 +20,7 @@ import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.BaseActivity;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.base.Order;
+import com.yishengyue.seller.base.QrCodeBean;
 import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.UrlUtils;
 import com.yishengyue.seller.view.widget.ActivateDialog;
@@ -87,22 +90,26 @@ public class ScanActivity extends BaseActivity implements QRCodeView.Delegate, V
      */
     @Override
     public void onScanQRCodeSuccess(String result) {
-        Log.e("ssss","=="+result);
+        Log.e("ssss","=result="+result);
          vibrate();//震动
-        String consumeVerifyCode = null;
+    /*    String consumeVerifyCode = null;
          try {
             consumeVerifyCode = UrlUtils.URLRequest(result).get("consumeverifycode");
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+        QrCodeBean qrCodeBean = null;
+        try {
+            qrCodeBean = new Gson().fromJson(result,QrCodeBean.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
         }
-        Log.e("ssss","=="+consumeVerifyCode);
-        if (TextUtils.isEmpty(consumeVerifyCode)||consumeVerifyCode.length() != 12) {
+        if (qrCodeBean==null||TextUtils.isEmpty(qrCodeBean.getConsumeVerifyCode())||qrCodeBean.getConsumeVerifyCode().length() != 12) {
             ToastUtils.showToast(this, "消费验证码不存在", Toast.LENGTH_SHORT).show();
             mQRCodeView.startSpot();
             return;
         }
-
-        CommApi.instance().getOrderDetail(Data.getUser().getUserId(), consumeVerifyCode).subscribe(new SimpleSubscriber<Order>(this, true) {
+        CommApi.instance().getOrderDetail(Data.getUser().getUserId(), qrCodeBean.getConsumeVerifyCode()).subscribe(new SimpleSubscriber<Order>(this, true) {
             @Override
             protected void onError(ApiException ex) {
                 mQRCodeView.startSpot();

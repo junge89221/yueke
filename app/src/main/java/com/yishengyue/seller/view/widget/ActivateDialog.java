@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +32,7 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
     private Order mOrder;
     private ViewHolder mHolder;
     private Context mContext;
-
-    public ActivateDialog(Context context, Order order,ActivateResultListener activateResultListener) {
+    public ActivateDialog(Context context, Order order, ActivateResultListener activateResultListener) {
         super(context);
         showAnim(new BounceEnter());
         this.mContext = context;
@@ -64,7 +64,11 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
             mHolder.mProductOrderAddress.setText(Html.fromHtml("收货地址：<font color='#000000'>" + mOrder.getReceiveAddress() + "</font>"));
            /* mHolder.mProductOrderBill.setText(Html.fromHtml("发票类型：<font color='#000000'>" + "不开发票" + "</font>"));
             mHolder.mProductOrderExpressFee.setText(Html.fromHtml("配送费用：<font color='#000000'>" + "快递配送免费" + "</font>"));*/
-        }
+           if("2".equals(mOrder.getBusinessTypeCode())){
+               mHolder.coupon_layout.setVisibility(View.GONE);
+               mHolder.mProductPrice.setVisibility(View.GONE);
+           }
+         }
     }
 
     class ViewHolder {
@@ -81,7 +85,7 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
         TextView mProductOrderExpressFee;*/
         TextView mDialogCancel;
         TextView mDialogCommit;
-
+        LinearLayout coupon_layout;
         ViewHolder(View view) {
             this.view = view;
             this.mProductImg = (ImageView) view.findViewById(R.id.product_img);
@@ -94,6 +98,7 @@ public class ActivateDialog extends BaseDialog<ActivateDialog> {
             this.mProductOrderAddress = (TextView) view.findViewById(R.id.product_order_address);
            /* this.mProductOrderBill = (TextView) view.findViewById(R.id.product_order_bill);
             this.mProductOrderExpressFee = (TextView) view.findViewById(R.id.product_order_express_fee);*/
+           this.coupon_layout = view.findViewById(R.id.coupon_layout);
             this.mDialogCancel = (TextView) view.findViewById(R.id.dialog_cancel);
             this.mDialogCommit = (TextView) view.findViewById(R.id.dialog_commit);
             this.mDialogCancel.setOnClickListener(new View.OnClickListener() {

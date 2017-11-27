@@ -41,6 +41,15 @@ public class Order {
     private String productImage;
     private String productJingle;
     private double productPrice;
+    private String businessTypeCode;
+
+    public String getBusinessTypeCode() {
+        return businessTypeCode;
+    }
+
+    public void setBusinessTypeCode(String businessTypeCode) {
+        this.businessTypeCode = businessTypeCode;
+    }
 
     public String getAddTime() {
         return addTime;

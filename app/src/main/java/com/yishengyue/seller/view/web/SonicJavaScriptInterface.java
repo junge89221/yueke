@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -30,7 +29,6 @@ import com.yishengyue.seller.api.subscriber.SimpleSubscriber;
 import com.yishengyue.seller.base.Data;
 import com.yishengyue.seller.util.AppManager;
 import com.yishengyue.seller.util.DataCleanManager;
-import com.yishengyue.seller.util.ToastUtils;
 import com.yishengyue.seller.util.Utils;
 
 import org.json.JSONException;
@@ -184,17 +182,18 @@ public class SonicJavaScriptInterface {
                 .callback(new PermissionListener() {
                     @Override
                     public void onSucceed(int requestCode, @NonNull List<String> grantPermissions) {
-                         Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
+                        Intent intent = new Intent(Utils.getContext(), ScanActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         Utils.getContext().startActivity(intent);
                     }
 
                     @Override
                     public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
-                     }
+                    }
                 })
                 .start();
     }
+
     @JavascriptInterface
     public void clearCache() {
         Observable.create(new ObservableOnSubscribe<Boolean>() {
@@ -231,13 +230,14 @@ public class SonicJavaScriptInterface {
 
     @JavascriptInterface
     public String getCachesize() {
-        String cacheSize = null;
+        JSONObject result = new JSONObject();
         try {
-            cacheSize = DataCleanManager.getCacheSize(Utils.getContext());
+            result.put("cacheSize", DataCleanManager.getCacheSize(Utils.getContext()));
+            return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  cacheSize;
+        return "";
     }
 
 
