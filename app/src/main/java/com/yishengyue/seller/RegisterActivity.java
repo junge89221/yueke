@@ -122,7 +122,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     }, 2000);
                     return;
                 }
-//                mGetCode.setEnabled(false);
+
                 CommApi.instance().getVerifyCode(mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<VerifyCodeBean>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
@@ -151,6 +151,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                 }
                             }, 2000);
                         } else {
+                            mGetCode.setEnabled(false);
                             mVerifyCodeBean = value;
                             okPhone = mLoginPhone.getText().toString().trim();
                             countDown.start();
@@ -249,7 +250,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         @Override
         public void onFinish() {
             mGetCode.setText("获取");
-//            mGetCode.setEnabled(true);
+            mGetCode.setEnabled(true);
         }
     }
 

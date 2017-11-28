@@ -124,7 +124,6 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                     }, 2000);
                     return;
                 }
-                mGetCode.setEnabled(false);
                 CommApi.instance().getVerifyCode(mLoginPhone.getText().toString().trim()).subscribe(new SimpleSubscriber<VerifyCodeBean>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
@@ -153,6 +152,7 @@ public class FastLoginActivity extends BaseActivity implements View.OnClickListe
                                 }
                             }, 2000);
                         }else {
+                            mGetCode.setEnabled(false);
                             mVerifyCodeBean = value;
                             okPhone = mLoginPhone.getText().toString().trim();
                             countDown.start();

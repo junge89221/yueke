@@ -42,7 +42,7 @@ public class InputCodeActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void onNext(Order value) {
                         setResult(RESULT_OK);
-                        new ActivateDialog(InputCodeActivity.this,value, finalQrCodeBean.getBusinessTypeCode(), InputCodeActivity.this).show();
+                        new ActivateDialog(InputCodeActivity.this,value, InputCodeActivity.this).show();
 
                     }
                 });
