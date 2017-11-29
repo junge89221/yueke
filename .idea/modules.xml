@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yishengyue_oto.iml" filepath="$PROJECT_DIR$/yishengyue_oto.iml" />
       <module fileurl="file://E:\NewWorkPlace\yishengyue_seller_android_pro\yishengyue_oto.iml" filepath="E:\NewWorkPlace\yishengyue_seller_android_pro\yishengyue_oto.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yishengyue_seller_android_pro.iml" filepath="$PROJECT_DIR$/yishengyue_seller_android_pro.iml" />
       <module fileurl="file://F:\work\workplace\yishengyue_oto\yishengyue_seller_android_pro.iml" filepath="F:\work\workplace\yishengyue_oto\yishengyue_seller_android_pro.iml" />
     </modules>
   </component>
