@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yishengyue.seller.WelcomeActivity"
+    tools:context="com.yishengyue.seller.cn.yishengyue.seller.WelcomeActivity"
     tools:ignore="ContentDescription,MissingConstraints">
 
 
@@ -47,7 +47,7 @@
         android:layout_below="@id/textView4"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
-        android:text="一生约O2O商家"
+        android:text="Yueke"
         android:textColor="#1A1A1A"
         android:textSize="34sp" />
 
@@ -62,7 +62,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:lineSpacingExtra="5dp"
-        android:text="为服务引流\n为商品增值\n我们一起合创共赢"
+        android:text="为服务引流\n为大众服务\n我们一起合创共赢"
         android:textColor="#1A1A1A"
         android:textSize="16sp" />
 
