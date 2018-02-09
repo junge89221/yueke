@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yishengyue.seller.cn.yishengyue.seller.WelcomeActivity"
+                android:background="@mipmap/artboard"
+     tools:context="com.yishengyue.seller.cn.yishengyue.seller.WelcomeActivity"
     tools:ignore="ContentDescription,MissingConstraints">
 
 
@@ -27,44 +28,26 @@
         android:textColor="#000000"
         android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="欢迎来到"
-        android:textColor="#BFC9D4"
-        android:textSize="12sp"
+        android:src="@mipmap/welcometext" />
 
-        />
 
-    <TextView
-        android:id="@+id/textView5"
+
+    <ImageView
+        android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:text="Yueke"
-        android:textColor="#1A1A1A"
-        android:textSize="34sp" />
+         android:layout_centerHorizontal="true"
+        android:layout_below="@id/imageView3"
+        android:layout_marginTop="30dp"
+        android:src="@mipmap/yuetext" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView5"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="75dp"
-        android:layout_marginStart="75dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:lineSpacingExtra="5dp"
-        android:text="为服务引流\n为大众服务\n我们一起合创共赢"
-        android:textColor="#1A1A1A"
-        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/textView8"
@@ -90,7 +73,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp"
         android:text="注册"
-        android:textColor="#3B55E6"
+        android:textColor="#FFFFFF"
         android:textSize="17sp"
 
         />

@@ -12,13 +12,13 @@
             android:src="@mipmap/welcome_center_default_image">
         </bitmap>
     </item>-->
-    <item  >
+  <!--  <item  >
         <bitmap
             android:gravity="bottom|center_horizontal"
             android:id="@+id/bitmap_splash"
              android:src="@mipmap/welcome_bottom_image">
         </bitmap>
-    </item>
+    </item>-->
 
 
 

@@ -21,7 +21,6 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
      * 注册
      */
     private TextView mTextView7;
-    private static final String CAMERAPERMISSION = Manifest.permission.CAMERA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

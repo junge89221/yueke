@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 
-
+import cn.bry.yueke.util.Utils;
 import cn.bry.yueke.view.widget.SplashView;
 
 public class SplashActivity extends AppCompatActivity {
@@ -27,7 +27,11 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onSplashViewDismiss(boolean initiativeDismiss) {
-               startActivity(new Intent(SplashActivity.this,WelcomeActivity.class));
+                if(Utils.getSpUtils().getBoolean("isFirst",true)){
+                    startActivity(new Intent(SplashActivity.this,GuideActivity.class));
+                }else {
+                    startActivity(new Intent(SplashActivity.this,WelcomeActivity.class));
+                }
                 finish();
             }
 
