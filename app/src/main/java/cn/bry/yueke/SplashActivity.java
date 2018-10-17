@@ -27,11 +27,8 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onSplashViewDismiss(boolean initiativeDismiss) {
-                if(Utils.getSpUtils().getBoolean("isFirst",true)){
-                    startActivity(new Intent(SplashActivity.this,GuideActivity.class));
-                }else {
-                    startActivity(new Intent(SplashActivity.this,WelcomeActivity.class));
-                }
+
+                startActivity(new Intent(SplashActivity.this, WelcomeActivity.class));
                 finish();
             }
 
