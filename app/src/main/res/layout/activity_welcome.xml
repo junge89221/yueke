@@ -39,14 +39,14 @@
 
 
 
-    <ImageView
+<!--    <ImageView
         android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
          android:layout_centerHorizontal="true"
         android:layout_below="@id/imageView3"
         android:layout_marginTop="30dp"
-        android:src="@mipmap/yuetext" />
+        android:src="@mipmap/yuetext" />-->
 
 
     <TextView

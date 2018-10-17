@@ -1,5 +1,6 @@
 package cn.bry.yueke.http.okhttp;
 
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.IOException;
@@ -43,10 +44,10 @@ public class LoggingInterceptor implements Interceptor {
 //                Log.d(TAG, "| RequestParams:{"+sb.toString()+"}");
 //            }
         }
-        Log.e(TAG, "| Response:" + content);
+        Log.e(TAG, "| Response:" + new String(Base64.decode(content, Base64.NO_WRAP)));
         Log.e(TAG,"----------End:"+duration+"毫秒----------");
         return response.newBuilder()
-                .body(okhttp3.ResponseBody.create(mediaType, content))
+                .body(okhttp3.ResponseBody.create(mediaType, new String(Base64.decode(content, Base64.NO_WRAP))))
                 .build();
 
     }

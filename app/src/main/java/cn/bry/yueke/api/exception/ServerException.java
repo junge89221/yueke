@@ -7,25 +7,25 @@ package cn.bry.yueke.api.exception;
  */
 public class ServerException extends RuntimeException {
 
-    private int code;
+    private String code;
     private String msg;
 
-    public ServerException(Throwable throwable, int code) {
+    public ServerException(Throwable throwable, String code) {
         super(throwable);
         this.code = code;
     }
 
-    public ServerException(int code, String msg) {
+    public ServerException(String code, String msg) {
         super(msg);
         this.msg = msg;
         this.code = code;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

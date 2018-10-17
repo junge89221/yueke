@@ -1,13 +1,10 @@
 package cn.bry.yueke;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-
-
 
 import cn.bry.yueke.base.BaseActivity;
 
@@ -17,10 +14,7 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
      * 登录
      */
     private TextView mTextView8;
-    /**
-     * 注册
-     */
-    private TextView mTextView7;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +27,7 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
     private void initView() {
         mTextView8 = (TextView) findViewById(R.id.textView8);
         mTextView8.setOnClickListener(this);
-        mTextView7 = (TextView) findViewById(R.id.textView7);
-        mTextView7.setOnClickListener(this);
+        findViewById(R.id.textView7).setOnClickListener(this);
     }
 
     @Override
@@ -45,9 +38,14 @@ public class WelcomeActivity extends BaseActivity implements View.OnClickListene
 //                startActivity(new Intent(this, InputCodeActivity.class));
 //                new ActivateDialog(this).show();
 //                startActivity(new Intent(this,MainActivity.class));
+
+//                BraingSdk.Payment( DateUtil.getStringNow2(),500,"测试订单");
+                finish();
                  break;
             case R.id.textView7://注册
                  startActivity(new Intent(this, RegisterActivity.class));
+//                BraingSdk.Register();
+//                BraingSdk.QueryOrder("123456");
 //                AndPermission.with(this)
 //                        .requestCode(100)
 //                        .permission(Permission.CAMERA)

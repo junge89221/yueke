@@ -30,7 +30,7 @@ public class ExceptionEngine {
         } else if (e instanceof ServerException){
             ServerException resultException = (ServerException) e;
             ex = new ApiException(resultException, Error.SERVER_ERROR);
-            ex.setErrorCode(resultException.getCode());
+            ex.setErrorCode(0);
             ex.setMsg(resultException.getMsg());
             return ex;
         } else if(e instanceof ConnectException || e instanceof SocketException || e instanceof SocketTimeoutException){

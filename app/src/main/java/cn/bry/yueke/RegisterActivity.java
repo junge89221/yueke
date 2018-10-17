@@ -29,6 +29,7 @@ import cn.bry.yueke.base.BaseActivity;
 import cn.bry.yueke.base.Data;
 import cn.bry.yueke.base.User;
 import cn.bry.yueke.base.VerifyCodeBean;
+import cn.bry.yueke.base.loginResp;
 import cn.bry.yueke.util.AppManager;
 import cn.bry.yueke.util.Constant;
 import cn.bry.yueke.util.RegexUtils;
@@ -116,14 +117,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             case R.id.login_commit:
 
-                CommApi.instance().register(mLoginPhone.getText().toString().trim(), mLoginCode.getText().toString().trim(),isVIP?1:0).subscribe(new SimpleSubscriber<String>(this, true) {
+                CommApi.instance().register(mLoginPhone.getText().toString().trim(), mLoginCode.getText().toString().trim()).subscribe(new SimpleSubscriber<loginResp>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
                         if(TextUtils.isEmpty(ex.getMsg()))return;
                         ToastUtils.showToast(RegisterActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
                      }
                     @Override
-                    public void onNext(String value) {
+                    public void onNext(loginResp value) {
                         ToastUtils.showToast(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         finish();

@@ -24,6 +24,7 @@ import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.PermissionListener;
 
+import cn.braing.pay.lib.BraingSdk;
 import cn.bry.yueke.LoginActivity;
 import cn.bry.yueke.api.exception.ApiException;
 import cn.bry.yueke.api.subscriber.SimpleSubscriber;
@@ -55,6 +56,8 @@ public class SonicJavaScriptInterface {
     public static final String PARAM_CLICK_TIME = "clickTime";
 
     public static final String PARAM_LOAD_URL_TIME = "loadUrlTime";
+
+
 
     public SonicJavaScriptInterface(SonicSessionClientImpl sessionClient, Intent intent) {
         this.sessionClient = sessionClient;
@@ -168,7 +171,26 @@ public class SonicJavaScriptInterface {
         return null;
     }
 
+    @JavascriptInterface
+    public void QueryOrder(String orderNo) {
+        BraingSdk.QueryOrder(orderNo);
+    }
 
+
+    @JavascriptInterface
+    public void Payment(String orderNo, int orderMoney, String orderMark) {
+        BraingSdk.Payment(orderNo, orderMoney, orderMark);
+    }
+
+    @JavascriptInterface
+    public void login() {
+        BraingSdk.Login();
+    }
+
+    @JavascriptInterface
+    public void Register() {
+        BraingSdk.Register();
+    }
 
     @JavascriptInterface
     public void clearCache() {

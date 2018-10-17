@@ -69,18 +69,18 @@ public class MainActivity extends BaseActivity {
     private boolean needBackToHomePage = false; // 是否需要跳转到首页
     private boolean needClearBackClickedTimes = false; // 是否需要清除返回按键点击次数
     private int backClickedTimes = 0;
-
+    private String htmlString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_main);
-
+        htmlString = getIntent().getStringExtra("htmlString");
         progressbar = findViewById(R.id.progress_bar);
         webView = findViewById(R.id.web_view);
         initWebSettings(webView);
-        loadIndexUrl(BuildConfig.WEB_INDEX);
+        loadIndexUrl(htmlString);
         initExitDialog();
     }
 
@@ -114,7 +114,7 @@ public class MainActivity extends BaseActivity {
             }
             if (backClickedTimes >= 4) {
                 needBackToHomePage = true;
-                loadIndexUrl(BuildConfig.WEB_INDEX);
+                loadIndexUrl(htmlString);
             } else {
                 webView.goBack();
             }

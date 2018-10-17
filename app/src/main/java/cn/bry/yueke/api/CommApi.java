@@ -1,12 +1,27 @@
 package cn.bry.yueke.api;
 
+import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+
+import cn.braing.pay.lib.bean.CommRequest;
+import cn.braing.pay.lib.bean.LoginReq;
+import cn.braing.pay.lib.bean.ReqMessageHead;
+import cn.braing.pay.lib.bean.ServerLogEvent;
+import cn.braing.pay.lib.util.DateUtil;
+import cn.braing.pay.lib.util.MD5Util;
+import cn.bry.yueke.base.CommRequest2;
 import cn.bry.yueke.base.Order;
+import cn.bry.yueke.base.RegisterReq;
+import cn.bry.yueke.base.ReqMessageHead2;
 import cn.bry.yueke.base.User;
 import cn.bry.yueke.base.VerifyCodeBean;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import cn.bry.yueke.base.loginResp;
 import io.reactivex.Observable;
 
 /**
@@ -40,20 +55,11 @@ public class CommApi extends HttpApi<CommApiService> {
      * @param password
      * @return
      */
-    public Observable<String> register(String loginName, String password, int type) {
-        return dispose(apiService.register(loginName,password,type));
+    public Observable<loginResp> register(String loginName, String password) {
+        return dispose(apiService.getData(getReqBean("REGISTER",new RegisterReq(DateUtil.getStringNow(),"1002",loginName,password))));
     }
 
 
-    /**
-     * 获取验证码
-     *
-     * @param mobile 手机号码
-     * @return
-     */
-    public Observable<VerifyCodeBean> getVerifyCode(String mobile) {
-        return dispose(apiService.getVerifyCode(mobile, "OTO"));
-    }
 
 
     /**
@@ -63,45 +69,17 @@ public class CommApi extends HttpApi<CommApiService> {
      * @param password
      * @return
      */
-    public Observable<User> login(String loginName, String password) {
-        return dispose(apiService.login(loginName, password, "USER"));
+    public Observable<loginResp> login(String loginName, String password) {
+        return dispose(apiService.getData(getReqBean("LOGIN",new RegisterReq(DateUtil.getStringNow(),"1001",loginName,password))));
     }
+    private CommRequest2 getReqBean(String method, Object bean) {
+        ReqMessageHead2 reqMessageHead = new ReqMessageHead2();
+         String lsh = UUID.randomUUID().toString();
+        reqMessageHead.setSeqNo(lsh);
+        reqMessageHead.setOpFlag(method);
+        reqMessageHead.setAppVersion("v1.0");
+        reqMessageHead.setSign(MD5Util.encodeMD5(lsh + method));
+         return new CommRequest2(reqMessageHead, bean);
 
-    /**
-     * 快捷登录
-     *
-     * @param loginName
-     * @param verifyCode
-     * @return
-     */
-    public Observable<User> fastLogin(String loginName, String verifyCode) {
-        return dispose(apiService.fastLogin(loginName, verifyCode));
-    }
-
-    /**
-     * （卖家端）通过消费验证码获取订单详情信息
-     *
-     * @return
-     */
-    public Observable<Order> getOrderDetail(String userId, String consumeVerifyCode) {
-        return dispose(apiService.getOrderDetail(userId, consumeVerifyCode));
-    }
-
-    /**
-     * 核销验证码[扫描二维码或手动收
-     *
-     * @return
-     */
-    public Observable<String> activateOrder(String userId, String consumeVerifyCode, String orderDatilId) {
-        return dispose(apiService.activateOrder(userId, consumeVerifyCode, orderDatilId));
-    }
-
-    /**
-     * 忘记密码
-     *
-     * @return
-     */
-    public Observable<String> forgetPassword(String phone, String verifyCode, String newPwd) {
-        return dispose(apiService.forgetPassword(phone, verifyCode, newPwd));
     }
 }

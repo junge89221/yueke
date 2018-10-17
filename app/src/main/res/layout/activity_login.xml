@@ -75,6 +75,8 @@
             android:hint="请输入你的登录账户"
              android:paddingBottom="8dp"
             android:paddingEnd="10dp"
+            android:maxLength="11"
+            android:inputType="phone"
             android:layout_marginTop="6dp"
             android:paddingStart="10dp"
             android:paddingTop="8dp"

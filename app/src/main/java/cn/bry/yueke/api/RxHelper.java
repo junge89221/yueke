@@ -17,14 +17,14 @@ public class RxHelper {
         public T apply(ApiResult<T> httpResult) {
 
             if (!httpResult.isSuccess()) {
-                throw new ServerException(httpResult.code,httpResult.msg);
+                throw new ServerException(httpResult.rspMessageHead.getReturnCode(),httpResult.rspMessageHead.getReturnMessage());
             }
 //            if(httpResult.data==null){
 //                throw new NullPointerException();
 //            }
 //            return httpResult.data;
 
-            return httpResult.data==null? (T) "" :httpResult.data;
+            return httpResult.rspMessageBody==null? (T) "" :httpResult.rspMessageBody;
         }
     }
 

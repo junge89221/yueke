@@ -22,6 +22,7 @@ import cn.bry.yueke.api.subscriber.SimpleSubscriber;
 import cn.bry.yueke.base.BaseActivity;
 import cn.bry.yueke.base.Data;
 import cn.bry.yueke.base.User;
+import cn.bry.yueke.base.loginResp;
 import cn.bry.yueke.util.AppManager;
 import cn.bry.yueke.util.ToastUtils;
 
@@ -80,7 +81,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 finish();
                 break;
             case R.id.login_commit:
-                CommApi.instance().login(mLoginPhone.getText().toString().trim(), mLoginPassword.getText().toString().trim()).subscribe(new SimpleSubscriber<User>(this, true) {
+                CommApi.instance().login(mLoginPhone.getText().toString().trim(), mLoginPassword.getText().toString().trim()).subscribe(new SimpleSubscriber<loginResp>(this, true) {
                     @Override
                     protected void onError(ApiException ex) {
                         ToastUtils.showToast(LoginActivity.this, ex.getMsg(), Toast.LENGTH_SHORT).show();
@@ -88,9 +89,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     }
 
                     @Override
-                    public void onNext(User value) {
-                        Data.setUser(value);
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    public void onNext(loginResp value) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("htmlString",BuildConfig.WEB_INDEX+value.getUserId());
+                        startActivity(intent);
                         AppManager.getAppManager().finishNotSpecifiedActivity(MainActivity.class);
                     }
                 });
